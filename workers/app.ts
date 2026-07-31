@@ -8,7 +8,7 @@ type Bindings = {
 const app = new Hono<{ Bindings: Bindings }>();
 
 // API route
-app.get("/api/posts", async (c) => {
+app.get("/posts", async (c) => {
   const { results } = await c.env.DB.prepare(`
     SELECT *
     FROM posts
