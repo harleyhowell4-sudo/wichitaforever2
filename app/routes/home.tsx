@@ -12,7 +12,7 @@ export default function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
-    fetch("/api/posts")
+    fetch("/posts")
       .then((res) => res.json())
       .then(setPosts)
       .catch(console.error);
