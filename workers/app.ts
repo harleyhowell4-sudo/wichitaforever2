@@ -1,11 +1,22 @@
 import { Hono } from "hono";
 import { createRequestHandler } from "react-router";
-import posts from "./api/posts";
 
-const app = new Hono();
+type Bindings = {
+  DB: D1Database;
+};
 
-// API routes
-app.route("/api/posts", posts);
+const app = new Hono<{ Bindings: Bindings }>();
+
+// API route
+app.get("/api/posts", async (c) => {
+  const { results } = await c.env.DB.prepare(`
+    SELECT *
+    FROM posts
+    ORDER BY created_at DESC
+  `).all();
+
+  return c.json(results);
+});
 
 // React Router
 app.get("*", (c) => {
