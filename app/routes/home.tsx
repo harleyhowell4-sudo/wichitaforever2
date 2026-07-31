@@ -28,7 +28,7 @@ export default function Home() {
     >
       <h1>Wichita Forever</h1>
 
-      <p>Music • History • Art • Culture</p>
+      <p>Fake News Forever</p>
 
       <hr />
 
