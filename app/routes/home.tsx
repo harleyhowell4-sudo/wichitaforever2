@@ -1,5 +1,6 @@
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import Hero from "../components/Hero";
 
 export default function Home() {
   return (
@@ -12,7 +13,9 @@ export default function Home() {
         padding: "2rem",
       }}
     >
-     <section style ={{ marginBottom: 4rem" Padding: "2rem", }}>
+    <Hero />
+
+<section>
       <h2>Wichita Fake News </h2>
       <p>
         Welcome to Wichita Fake News. </p>
