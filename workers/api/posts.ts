@@ -28,7 +28,7 @@ type Bindings = {
 const posts = new Hono<{ Bindings: Bindings }>();
 
 // GET /api/posts
-posts.get("/", async (c) => {
+posts.get("/api/posts", async (c) => {
   const { results } = await c.env.DB.prepare(`
     SELECT
       id,
@@ -46,7 +46,7 @@ posts.get("/", async (c) => {
 });
 
 // GET /api/posts/:slug
-posts.get("/:slug", async (c) => {
+posts.get("/api/posts/:slug", async (c) => {
   const slug = c.req.param("slug");
 
   const post = await c.env.DB.prepare(`
