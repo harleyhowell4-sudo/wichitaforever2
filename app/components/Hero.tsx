@@ -1,32 +1,20 @@
 export default function Hero() {
   return (
-    <section
-      style={{
-        padding: "5rem 2rem",
-        textAlign: "center",
-        borderBottom: "1px solid #ddd",
-        marginBottom: "3rem",
-      }}
-    >
-      <h1
-        style={{
-          fontSize: "3rem",
-          marginBottom: "1rem",
-        }}
-      >
-        Wichita Forever
-      </h1>
+    <section className="bg-zinc-950 py-24 text-center text-white">
+      <div className="mx-auto max-w-4xl px-6">
+        <h1 className="text-6xl font-black tracking-tight">
+          Wichita Forever
+        </h1>
 
-      <p
-        style={{
-          fontSize: "1.3rem",
-          maxWidth: "700px",
-          margin: "0 auto",
-        }}
-      >
-        A home for Wichita's music, history, art, culture, and the people
-        keeping it alive.
-      </p>
+        <p className="mt-6 text-xl text-zinc-300">
+          Music • History • Art • Culture
+        </p>
+
+        <p className="mx-auto mt-8 max-w-2xl text-lg text-zinc-400">
+          Preserving Wichita's stories through journalism, photography,
+          interviews, history, and local music.
+        </p>
+      </div>
     </section>
   );
 }
