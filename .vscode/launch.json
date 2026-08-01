@@ -1,0 +1,10 @@
+{
+    "configurations": [
+        {
+            "type": "chrome",
+            "name": "https://wichitaforever.com",
+            "request": "launch",
+            "url": "https://wichitaforever.com"
+        }
+    ]
+}
