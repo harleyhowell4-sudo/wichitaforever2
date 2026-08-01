@@ -2,15 +2,13 @@ import  {Link} from "react-router";
 export default function Header() {
   return (
     <Header
-        style={{
-                background: "#333",
-                color: "white",
-                padding: "1rem 2rem",
-            }}
-            <h1 style={{ margin: 0 }}>My Blog</h1>
-            <nav style={{ display: "flex", gap: "1rem" }}>
-                <Link to="/" style={{ color: "white", textDecoration: "none" }}>Home</Link>
-                <Link to="/about" style={{ color: "white", textDecoration: "none" }}>About</Link>   
-                </nav>
+<header className="bg-black text-white">;
+<article className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm hover:shadow-lg transition">
+  <h2 className="text-2xl font-bold">Welcome to Wichita Forever</h2>
+
+  <p className="mt-2 text-zinc-600">
+    This is the first article...
+  </p>
+</article>
                 </header>
     }
