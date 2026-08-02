@@ -37,4 +37,24 @@ function slugify(filename) {
 
 const files = fs.readdirSync(CONTENT_DIR).filter(f => /\.(md|mdx)$/i.test(f));
 if (files.length === 0) {
-  conso
+  console.error(`No markdown files found in ${CONTENT_DIR}`);
+  process.exit(1);
+}
+
+console.log(`Found ${files.length} markdown files in ${CONTENT_DIR}`);
+const statements = [];
+
+for (const file of files) {
+  const raw = fs.readFileSync(path.join(CONTENT_DIR, file), "utf-8");
+  const { frontmatter, body } = parseFrontmatter(raw);
+  const title = frontmatter.title || slugify(file);
+  const slug = frontmatter.slug || slugify(file);
+  const description = frontmatter.description || "";
+  const content = body;
+  const heroImage = frontmatter.heroImage || frontmatter.hero_image || "";
+  const tags = frontmatter.tags || "";
+  const author = frontmatter.author || "Wichita Forever";
+  const createdAt = toISO(frontmatter.pubDate || frontmatter.date);
+  const draft = frontmatter.draft === "true" ? 1 : 0;
+  const published = draft ? 0 : 1;
+  const featured = frontmatter.featured === "t
