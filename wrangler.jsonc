@@ -3,30 +3,12 @@
   "name": "wichitaforever2",
   "main": "./workers/app.ts",
   "compatibility_date": "2025-10-08",
-
+  "compatibility_flags": ["nodejs_compat"],
   "vars": {
     "VALUE_FROM_CLOUDFLARE": "Hello from Hono/CF"
   },
-
   "observability": {
     "enabled": true
-  },
-
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "posts",
-      "database_id": "aa25b761-3415-4f8d-bf78-7d80746e17c7"
-    }
-  ],
-{
-  "name": "wichitaforever2",
-  "compatibility_date": "2025-10-08",
-  "compatibility_flags": ["nodejs_compat"],
-  "main": "./dist/_worker.js/index.js",
-  "assets": {
-    "directory": "./dist",
-    "binding": "ASSETS"
   },
   "d1_databases": [
     {
@@ -35,11 +17,5 @@
       "database_id": "aa25b761-3415-4f8d-bf78-7d80746e17c7"
     }
   ],
-  "observability": {
-    "enabled": true
-  },
-  "upload_source_maps": true
-}
-
   "upload_source_maps": true
 }
