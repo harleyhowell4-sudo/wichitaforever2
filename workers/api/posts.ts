@@ -1,33 +1,12 @@
 import { Hono } from "hono";
 
-const app = new Hono();
-
-app.get("/", async (c) => {
-  const db = c.env.DB;
-
-  const { results } = await db
-    .prepare(
-      `SELECT *
-       FROM posts
-       WHERE published = 1
-       ORDER BY created_at DESC`
-    )
-    .all();
-
-  return c.json(results);
-});
-
-export default app;
-
-import { Hono } from "hono";
-
 type Bindings = {
   DB: D1Database;
 };
 
 const posts = new Hono<{ Bindings: Bindings }>();
 
-// GET /api/posts
+// GET all posts
 posts.get("/api/posts", async (c) => {
   const { results } = await c.env.DB.prepare(`
     SELECT
@@ -45,7 +24,7 @@ posts.get("/api/posts", async (c) => {
   return c.json(results);
 });
 
-// GET /api/posts/:slug
+// GET single post
 posts.get("/api/posts/:slug", async (c) => {
   const slug = c.req.param("slug");
 
@@ -62,6 +41,14 @@ posts.get("/api/posts/:slug", async (c) => {
   }
 
   return c.json(post);
+});
+
+// IMPORT POSTS
+posts.post("/api/import-posts", async (c) => {
+  return c.json({
+    success: true,
+    message: "Import route works"
+  });
 });
 
 export default posts;
