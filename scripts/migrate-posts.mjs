@@ -57,4 +57,14 @@ for (const file of files) {
   const createdAt = toISO(frontmatter.pubDate || frontmatter.date);
   const draft = frontmatter.draft === "true" ? 1 : 0;
   const published = draft ? 0 : 1;
-  const featured = frontmatter.featured === "t
+  const featured = frontmatter.featured === "true" ? 1 : 0;
+
+  statements.push(`INSERT INTO posts (title, slug, description, content, hero_image, tags, author, created_at, updated_at, draft, published, featured, views)
+VALUES (${sqlEscape(title)}, ${sqlEscape(slug)}, ${sqlEscape(description)}, ${sqlEscape(content)}, ${sqlEscape(heroImage)}, ${sqlEscape(tags)}, ${sqlEscape(author)}, ${sqlEscape(createdAt)}, ${sqlEscape(createdAt)}, ${draft}, ${published}, ${featured}, 0)
+ON CONFLICT(slug) DO UPDATE SET title=excluded.title, description=excluded.description, content=excluded.content, hero_image=excluded.hero_image, tags=excluded.tags, author=excluded.author, updated_at=excluded.updated_at, draft=excluded.draft, published=excluded.published, featured=excluded.featured;`);
+  console.log(`  ✓ ${file} → slug: ${slug}`);
+}
+
+fs.mkdirSync(path.dirname(OUTPUT_FILE), { recursive: true });
+fs.writeFileSync(OUTPUT_FILE, statements.join("\n\n") + "\n");
+console.log(`\n✅ Generated ${statements.length} INSERT statements → ${OUTPUT_FILE}`);
