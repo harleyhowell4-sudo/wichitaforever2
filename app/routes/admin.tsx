@@ -1,4 +1,20 @@
 export default function Admin() {
+  async function importPosts() {
+    try {
+      const res = await fetch("/api/import-posts", {
+        method: "POST",
+      });
+
+      const data = await res.json();
+
+      console.log(data);
+      alert("Import complete!");
+    } catch (err) {
+      console.error(err);
+      alert("Import failed");
+    }
+  }
+
   return (
     <main className="mx-auto max-w-3xl p-8">
       <h1 className="text-4xl font-bold">Admin</h1>
@@ -11,6 +27,7 @@ export default function Admin() {
         </p>
 
         <button
+          onClick={importPosts}
           className="mt-6 rounded-lg bg-black px-6 py-3 text-white hover:bg-zinc-800"
         >
           Import Posts
