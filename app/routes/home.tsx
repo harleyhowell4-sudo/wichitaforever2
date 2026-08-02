@@ -31,11 +31,26 @@ export default function Home() {
 />
 
 <PostCard
-  title="The Return of Local Music"
-  description="A look at Wichita's growing independent music scene."
+  title="The Music"
+  description="A "
   slug="local-music"
   date="August 2026"
 />
+export default function Home() {
+  return (
+    <Card className="max-w-sm">
+      <CardHeader>
+        <CardTitle>Project Overview</CardTitle>
+        <CardDescription>
+          Track progress and recent activity for your React Router app.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        Your design system is ready. Start building your next component.
+      </CardContent>
+    </Card>
+  )
+}
           </section>
           </main>
           <Footer />
