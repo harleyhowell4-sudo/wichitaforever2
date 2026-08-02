@@ -29,15 +29,7 @@ export default function Home() {
   slug="welcome"
   date="August 2026"
 />
-
-<PostCard
-  title="The Music"
-  description="A "
-  slug="local-music"
-  date="August 2026"
-/>
-export default function Home() {
-  return (
+return (
     <Card className="max-w-sm">
       <CardHeader>
         <CardTitle>Project Overview</CardTitle>
@@ -49,6 +41,14 @@ export default function Home() {
         Your design system is ready. Start building your next component.
       </CardContent>
     </Card>
+<PostCard
+  title="The Music"
+  description="A "
+  slug="local-music"
+  date="August 2026"
+/>
+export default function Home() {
+  
   )
 }
           </section>
