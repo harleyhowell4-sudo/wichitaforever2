@@ -1,7 +1,7 @@
 export default function Admin() {
   async function importPosts() {
     try {
-      const res = await fetch("/api/import-posts", {
+      const res = await fetch("/api/posts.ts", {
         method: "POST",
       });
 
