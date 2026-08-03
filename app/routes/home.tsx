@@ -1,14 +1,7 @@
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "../components/ui/card";
-import { PostCard } from "../components/PostCard";
-import { Header } from "../components/Header";
-import { Hero } from "../components/Hero";
-import { Footer } from "../components/Footer";
+import PostCard from "../components/PostCard";
+import Header from "../components/Header";
+import Hero from "../components/Hero";
+import Footer from "../components/Footer";
 
 export default function Home() {
   return (
@@ -36,17 +29,11 @@ export default function Home() {
             slug="welcome"
             date="August 2026"
           />
-          <Card className="max-w-sm">
-            <CardHeader>
-              <CardTitle>Project Overview</CardTitle>
-              <CardDescription>
-                Track progress and recent activity for your React Router app.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              Your design system is ready. Start building your next component.
-            </CardContent>
-          </Card>
+          <div className="max-w-sm">
+            <h3>Project Overview</h3>
+            <p>Track progress and recent activity for your React Router app.</p>
+            <p>Your design system is ready. Start building your next component.</p>
+          </div>
           <PostCard
             title="The Music"
             description="A"
