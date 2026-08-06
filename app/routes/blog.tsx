@@ -1,4 +1,4 @@
-import PostCard from "../components/PostCard";
+import PostCard from "../components/Postcard";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import Footer from "../components/Footer";
