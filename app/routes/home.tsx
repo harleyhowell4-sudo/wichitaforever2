@@ -1,4 +1,4 @@
-import PostCard from "../components/PostCard";
+import Postcard from "../components/PostCard";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import Footer from "../components/Footer";
@@ -34,7 +34,7 @@ export default function Home() {
             <p>Track progress and recent activity for your React Router app.</p>
             <p>Your design system is ready. Start building your next component.</p>
           </div>
-          <PostCard
+          <Postcard
             title="The Music"
             description="A"
             slug="local-music"
