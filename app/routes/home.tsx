@@ -1,4 +1,4 @@
-import Postcard from "app/components/PostCard";
+import Postcard from "app/components/Postcard";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import Footer from "../components/Footer";
@@ -23,7 +23,7 @@ export default function Home() {
 
         <section>
           <h2>Latest Stories</h2>
-          <PostCard
+          <Postcard
             title="Welcome to Wichita Forever"
             description="This is the first article in the new Wichita Forever website."
             slug="welcome"
