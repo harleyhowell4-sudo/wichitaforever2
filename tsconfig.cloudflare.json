@@ -16,6 +16,8 @@
 		"target": "ES2022",
 		"module": "ES2022",
 		"moduleResolution": "bundler",
+		"baseUrl": ".",
+		"ignoreDeprecations": "6.0",
 		"jsx": "react-jsx",
 		"rootDirs": [".", "./.react-router/types"],
 		"paths": {
