@@ -13,9 +13,8 @@ export default function Header() {
 
         <nav className="flex gap-6 text-sm uppercase font-semibold tracking-wide">
           <Link to="/">Home</Link>
-          <Link to="/music">Music</Link>
-          <Link to="/history">History</Link>
-          <Link to="/events">Events</Link>
+          <Link to="/blog">News</Link>
+          <Link to="/technical">Technical</Link>
           <Link to="/about">About</Link>
         </nav>
       </div>

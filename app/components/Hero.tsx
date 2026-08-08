@@ -7,12 +7,11 @@ export default function Hero() {
         </h1>
 
         <p className="mt-6 text-xl text-zinc-300">
-          Music • History • Art • Culture
+          WICHITA FOREVER 
         </p>
 
         <p className="mx-auto mt-8 max-w-2xl text-lg text-zinc-400">
-          Preserving Wichita's stories through journalism, photography,
-          interviews, history, and local music.
+          Preserving Wichita 
         </p>
       </div>
     </section>

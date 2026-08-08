@@ -17,13 +17,14 @@ export default function Home() {
         <Hero />
 
         <section>
-          <h2>Wichita Fake News</h2>
-          <p>Welcome to Wichita Fake News.</p>
+          <h2>Wichita Forever</h2>
+          <p>Welcome to the Wichita Forever Fake News Division.</p>
         </section>
 
         <section>
           <h2>Latest Stories</h2>
           <PostCard
+          
             title="Welcome to Wichita Forever"
             description="This is the first article in the new Wichita Forever website."
             slug="welcome"
