@@ -1,4 +1,4 @@
-import Postcard from "app/components/Postcard";
+import PostCard from "app/components/PostCard";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import Footer from "../components/Footer";
@@ -23,7 +23,7 @@ export default function Home() {
 
         <section>
           <h2>Latest Stories</h2>
-          <Postcard
+          <PostCard
             title="Welcome to Wichita Forever"
             description="This is the first article in the new Wichita Forever website."
             slug="welcome"
@@ -34,7 +34,7 @@ export default function Home() {
             <p>Track progress and recent activity for your React Router app.</p>
             <p>Your design system is ready. Start building your next component.</p>
           </div>
-          <Postcard
+          <PostCard
             title="The Music"
             description="A"
             slug="local-music"
