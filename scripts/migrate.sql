@@ -22,7 +22,7 @@ VALUES ('Mr. Beast Hidden Treasure Hiding under the Hidden Troll!', 'mrbeast', '
 ON CONFLICT(slug) DO UPDATE SET title=excluded.title, description=excluded.description, content=excluded.content, hero_image=excluded.hero_image, tags=excluded.tags, author=excluded.author, updated_at=excluded.updated_at, draft=excluded.draft, published=excluded.published, featured=excluded.featured;
 
 INSERT INTO posts (title, slug, description, content, hero_image, tags, author, created_at, updated_at, draft, published, featured, views)
-VALUES ('Local Teenagers Addicted to Narcan', 'narcan', 'I felt like I almost felt something...', '"...I feel like I almost felt something - I think"', '/sad boy.png', '', 'Wichita Forever', '2022-07-08T05:00:00.000Z', '2022-07-08T05:00:00.000Z', 0, 1, 0, 0)
+VALUES ('Local Teenagers Addicted to Narcan', 'narcan', 'I felt like I almost felt something...', '"...I feel like I almost felt something - I think"', '/sad-boy.png', '', 'Wichita Forever', '2022-07-08T05:00:00.000Z', '2022-07-08T05:00:00.000Z', 0, 1, 0, 0)
 ON CONFLICT(slug) DO UPDATE SET title=excluded.title, description=excluded.description, content=excluded.content, hero_image=excluded.hero_image, tags=excluded.tags, author=excluded.author, updated_at=excluded.updated_at, draft=excluded.draft, published=excluded.published, featured=excluded.featured;
 
 INSERT INTO posts (title, slug, description, content, hero_image, tags, author, created_at, updated_at, draft, published, featured, views)
