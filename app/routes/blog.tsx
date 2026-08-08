@@ -66,6 +66,7 @@ export default function Blog({ loaderData }: BlogComponentProps) {
               title={post.title}
               description={post.description ?? ""}
               slug={post.slug}
+              heroImage={post.hero_image}
               date={new Date(post.created_at).toLocaleDateString("en-US", {
                 year: "numeric",
                 month: "long",
