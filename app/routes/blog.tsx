@@ -53,7 +53,7 @@ export default function Blog({ loaderData }: BlogComponentProps) {
       >
         <Hero />
 
-        <section style={{ marginTop: "2rem" }}>
+        <section style={{ marginTop: "4rem" }}>
           <h2>Latest Posts</h2>
 
           {posts.length === 0 && (
