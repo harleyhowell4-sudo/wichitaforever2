@@ -2,7 +2,6 @@ import PostCard from "app/components/PostCard";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import Footer from "../components/Footer";
-import type { Route } from "./+types/blog";
 
 type PostSummary = {
   id: number;
@@ -13,22 +12,33 @@ type PostSummary = {
   created_at: string;
 };
 
-export async function loader({ context }: Route.LoaderArgs) {
+type BlogLoaderArgs = {
+  context: any;
+};
+
+type BlogComponentProps = {
+  loaderData: {
+    posts: PostSummary[];
+  };
+};
+
+export async function loader({ context }: BlogLoaderArgs) {
   const db = context.cloudflare.env.DB;
 
-  const { results } = await db
+  const queryResult = await db
     .prepare(
       `SELECT id, title, slug, description, hero_image, created_at
        FROM posts
        WHERE published = 1
        ORDER BY created_at DESC`,
     )
-    .all<PostSummary>();
+    .all();
 
-  return { posts: results };
+  const posts = queryResult.results as PostSummary[];
+  return { posts };
 }
 
-export default function Blog({ loaderData }: Route.ComponentProps) {
+export default function Blog({ loaderData }: BlogComponentProps) {
   const { posts } = loaderData;
 
   return (
