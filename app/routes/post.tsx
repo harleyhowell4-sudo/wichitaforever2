@@ -1,7 +1,6 @@
 import { data } from "react-router";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
-import type { Route } from "./+types/post";
 
 type Post = {
   id: number;
@@ -20,14 +19,25 @@ type Post = {
   views: number;
 };
 
-export async function loader({ params, context }: Route.LoaderArgs) {
+type PostLoaderArgs = {
+  params: { slug: string };
+  context: any;
+};
+
+type PostComponentProps = {
+  loaderData: {
+    post: Post;
+  };
+};
+
+export async function loader({ params, context }: PostLoaderArgs) {
   const db = context.cloudflare.env.DB;
 
-  const post = await db
+  const post = (await db
     .prepare(`SELECT * FROM posts WHERE slug = ?`)
     .bind(params.slug)
-    .first<Post>();
-
+    .first()) as Post | null;
+    
   if (!post) {
     throw data("Post not found", { status: 404 });
   }
@@ -35,7 +45,7 @@ export async function loader({ params, context }: Route.LoaderArgs) {
   return { post };
 }
 
-export function meta({ data }: Route.MetaArgs) {
+export function meta({ data }: { data: { post: Post } | undefined }) {
   if (!data) return [{ title: "Post not found — Wichita Forever" }];
   return [
     { title: `${data.post.title} — Wichita Forever` },
@@ -43,7 +53,7 @@ export function meta({ data }: Route.MetaArgs) {
   ];
 }
 
-export default function Post({ loaderData }: Route.ComponentProps) {
+export default function Post({ loaderData }: PostComponentProps) {
   const { post } = loaderData;
   const date = new Date(post.created_at).toLocaleDateString("en-US", {
     year: "numeric",
