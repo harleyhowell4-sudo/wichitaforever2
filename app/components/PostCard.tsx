@@ -32,7 +32,7 @@ export default function PostCard({
             alt={title}
             style={{
               width: "100%",
-              height: "220px",
+              height: "800px",
               objectFit: "cover",
               display: "block",
             }}
