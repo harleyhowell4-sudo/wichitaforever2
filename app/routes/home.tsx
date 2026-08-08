@@ -23,6 +23,7 @@ export default function Home() {
 
         <section>
           <h2>Latest Stories</h2>
+          
           <PostCard
           
             title="Welcome to Wichita Forever"
