@@ -27,19 +27,15 @@ export default function Home() {
           <PostCard
           
             title="Welcome to Wichita Forever"
-            description="This is the first article in the new Wichita Forever website."
+            description="Your home for freshly faked news."
             slug="welcome"
             date="August 2026"
           />
-          <div className="max-w-sm">
-            <h3>Project Overview</h3>
-            <p>Track progress and recent activity for your React Router app.</p>
-            <p>Your design system is ready. Start building your next component.</p>
-          </div>
+          
           <PostCard
-            title="The Music"
-            description="A"
-            slug="local-music"
+            title=""
+            description=""
+            slug=""
             date="August 2026"
           />
         </section>
