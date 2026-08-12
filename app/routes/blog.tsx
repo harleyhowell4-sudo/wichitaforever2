@@ -30,6 +30,7 @@ export async function loader({ context }: BlogLoaderArgs) {
       `SELECT id, title, slug, description, hero_image, created_at
        FROM posts
        WHERE published = 1
+         AND (tags IS NULL OR tags = '' OR tags = 'blog')
        ORDER BY created_at DESC`,
     )
     .all();

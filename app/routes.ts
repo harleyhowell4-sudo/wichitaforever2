@@ -6,4 +6,5 @@ export default [
   route("/post/:slug", "routes/post.tsx"),
   route("/about", "routes/about.tsx"),
   route("/technical", "routes/technical.tsx"),
+  route("/write", "routes/write.tsx"),
 ] satisfies RouteConfig;

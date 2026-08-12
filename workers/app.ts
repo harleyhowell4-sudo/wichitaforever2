@@ -18,8 +18,8 @@ app.get("/api/posts", async (c) => {
   return c.json(results);
 });
 
-// React Router
-app.get("*", (c) => {
+// React Router handles page loads and form actions.
+app.all("*", (c) => {
   const requestHandler = createRequestHandler(
     () => import("virtual:react-router/server-build"),
     import.meta.env.MODE,
