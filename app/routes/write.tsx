@@ -49,7 +49,7 @@ export default function Write() {
     <>
       <Header />
       <main className="mx-auto max-w-3xl px-6 py-12">
-        <p className="text-sm font-bold uppercase tracking-widest text-red-600">Writer's desk</p>
+        <p className="text-sm font-bold uppercase tracking-widest text-red-600">Writer's Page</p>
         <h1 className="mt-2 text-4xl font-black tracking-tight text-zinc-950">Delegate an article</h1>
         <p className="mt-3 text-zinc-600">Submissions are saved as drafts and tagged for the Blog or Technical queue.</p>
 
