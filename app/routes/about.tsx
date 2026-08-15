@@ -18,8 +18,37 @@ export default function About() {
         <section style={{ marginTop: "2rem" }}>
           <h2>About Wichita Forever</h2>
           <p>
-            This project keeps local Wichita stories, history, music, and culture
-            in one place.
+            ---
+
+
+
+	<p>Wichita Fake News</p>
+<p>
+F-ounders
+</p>
+<p>
+O-f
+</p>
+<p>
+R-egional
+</p>
+<p>
+E-nterprises
+</p>
+<p>
+V-ery
+</p>
+<p>
+E-xponential
+</p>
+<p>
+R-oofus
+</p>
+<p>
+We're fore, but we're also ver
+	</p>
+
+
           </p>
         </section>
       </main>
