@@ -50,44 +50,62 @@ export default function Admin() {
     loadPosts();
   }, []);
 
- async function publishPost(id: number) {
-  try {
-    const response = await fetch(
-      `/api/posts/${id}/publish`,
-      {
-        method: "POST",
-      },
-    );
+  // -----------------------------
+  // PUBLISH
+  // -----------------------------
 
-    if (!response.ok) {
-      throw new Error("Failed to publish.");
+  async function publishPost(id: number) {
+    try {
+      setError("");
+
+      const response = await fetch(
+        `/api/posts/${id}/publish`,
+        {
+          method: "POST",
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to publish.");
+      }
+
+      await loadPosts();
+    } catch (err) {
+      console.error(err);
+      setError("Unable to publish post.");
     }
-
-    await loadPosts();
-  } catch (err) {
-    console.error(err);
-    setError("Unable to publish post.");
   }
-}
-async function unpublishPost(id: number) {
-  try {
-    const response = await fetch(
-      `/api/posts/${id}/unpublish`,
-      {
-        method: "POST",
-      },
-    );
 
-    if (!response.ok) {
-      throw new Error("Failed to unpublish.");
+  // -----------------------------
+  // UNPUBLISH
+  // -----------------------------
+
+  async function unpublishPost(id: number) {
+    try {
+      setError("");
+
+      const response = await fetch(
+        `/api/posts/${id}/unpublish`,
+        {
+          method: "POST",
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to unpublish.");
+      }
+
+      await loadPosts();
+    } catch (err) {
+      console.error(err);
+      setError("Unable to unpublish post.");
     }
-
-    await loadPosts();
-  } catch (err) {
-    console.error(err);
-    setError("Unable to unpublish post.");
   }
-}
+
+  // -----------------------------
+  // DELETE
+  // -----------------------------
+
   async function deletePost(id: number) {
     const confirmed = window.confirm(
       "Are you sure you want to permanently delete this post?",
@@ -98,9 +116,14 @@ async function unpublishPost(id: number) {
     }
 
     try {
-      const response = await fetch(`/api/posts/${id}`, {
-        method: "DELETE",
-      });
+      setError("");
+
+      const response = await fetch(
+        `/api/posts/${id}`,
+        {
+          method: "DELETE",
+        },
+      );
 
       if (!response.ok) {
         throw new Error("Failed to delete.");
@@ -113,14 +136,21 @@ async function unpublishPost(id: number) {
     }
   }
 
-  const drafts = posts.filter((post) => post.draft === 1);
-  const published = posts.filter((post) => post.published === 1);
+  const drafts = posts.filter(
+    (post) => post.draft === 1,
+  );
+
+  const published = posts.filter(
+    (post) => post.published === 1,
+  );
 
   return (
     <>
       <Header />
 
       <main className="mx-auto max-w-6xl px-6 py-12">
+
+        {/* HEADER */}
         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
             <p className="text-sm font-bold uppercase tracking-widest text-red-600">
@@ -144,20 +174,26 @@ async function unpublishPost(id: number) {
           </a>
         </div>
 
+        {/* ERROR */}
         {error && (
           <div className="mt-6 rounded-md bg-red-50 p-4 text-red-800">
             {error}
           </div>
         )}
 
+        {/* LOADING */}
         {loading ? (
           <div className="mt-10 rounded-xl border border-zinc-200 p-8 text-zinc-600">
             Loading posts...
           </div>
         ) : (
           <>
-            {/* DRAFTS */}
+            {/* =========================================
+                DRAFTS
+            ========================================= */}
+
             <section className="mt-10">
+
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-2xl font-black text-zinc-950">
                   Drafts
@@ -174,14 +210,20 @@ async function unpublishPost(id: number) {
                 </div>
               ) : (
                 <div className="space-y-4">
+
                   {drafts.map((post) => (
                     <article
                       key={post.id}
                       className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm"
                     >
                       <div className="flex flex-col justify-between gap-4 md:flex-row">
+
+                        {/* POST INFO */}
+
                         <div>
+
                           <div className="flex flex-wrap gap-2">
+
                             <span className="rounded-full bg-yellow-100 px-2 py-1 text-xs font-bold text-yellow-800">
                               DRAFT
                             </span>
@@ -191,6 +233,7 @@ async function unpublishPost(id: number) {
                                 {post.tags}
                               </span>
                             )}
+
                           </div>
 
                           <h3 className="mt-3 text-xl font-bold text-zinc-950">
@@ -210,9 +253,13 @@ async function unpublishPost(id: number) {
                           <p className="mt-1 text-xs text-zinc-400">
                             ID: {post.id} · /post/{post.slug}
                           </p>
+
                         </div>
 
+                        {/* ACTIONS */}
+
                         <div className="flex shrink-0 flex-wrap gap-2">
+
                           <a
                             href={`/admin/edit/${post.id}`}
                             className="rounded-md border border-zinc-300 px-4 py-2 font-bold text-zinc-700 hover:bg-zinc-50"
@@ -222,7 +269,9 @@ async function unpublishPost(id: number) {
 
                           <button
                             type="button"
-                            onClick={() => publishPost(post.id)}
+                            onClick={() =>
+                              publishPost(post.id)
+                            }
                             className="rounded-md bg-green-600 px-4 py-2 font-bold text-white hover:bg-green-700"
                           >
                             Publish
@@ -237,22 +286,33 @@ async function unpublishPost(id: number) {
 
                           <button
                             type="button"
-                            onClick={() => deletePost(post.id)}
+                            onClick={() =>
+                              deletePost(post.id)
+                            }
                             className="rounded-md border border-red-300 px-4 py-2 font-bold text-red-600 hover:bg-red-50"
                           >
                             Delete
                           </button>
+
                         </div>
+
                       </div>
                     </article>
                   ))}
+
                 </div>
               )}
+
             </section>
 
-            {/* PUBLISHED */}
+            {/* =========================================
+                PUBLISHED
+            ========================================= */}
+
             <section className="mt-12">
+
               <div className="mb-4 flex items-center justify-between">
+
                 <h2 className="text-2xl font-black text-zinc-950">
                   Published
                 </h2>
@@ -260,21 +320,32 @@ async function unpublishPost(id: number) {
                 <span className="rounded-full bg-green-100 px-3 py-1 text-sm font-bold text-green-800">
                   {published.length}
                 </span>
+
               </div>
 
               {published.length === 0 ? (
+
                 <div className="rounded-xl border border-dashed border-zinc-300 p-8 text-zinc-500">
                   No published posts.
                 </div>
+
               ) : (
+
                 <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm">
+
                   {published.map((post) => (
+
                     <article
                       key={post.id}
                       className="flex flex-col justify-between gap-4 border-b border-zinc-200 p-5 last:border-b-0 md:flex-row md:items-center"
                     >
+
+                      {/* POST INFO */}
+
                       <div>
+
                         <div className="flex flex-wrap gap-2">
+
                           <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-bold text-green-800">
                             PUBLISHED
                           </span>
@@ -284,6 +355,7 @@ async function unpublishPost(id: number) {
                               FEATURED
                             </span>
                           )}
+
                         </div>
 
                         <h3 className="mt-2 font-bold text-zinc-950">
@@ -293,15 +365,29 @@ async function unpublishPost(id: number) {
                         <p className="mt-1 text-sm text-zinc-500">
                           {post.views} views · /post/{post.slug}
                         </p>
+
                       </div>
 
+                      {/* ACTIONS */}
+
                       <div className="flex flex-wrap gap-2">
+
                         <a
                           href={`/admin/edit/${post.id}`}
                           className="rounded-md border border-zinc-300 px-4 py-2 font-bold text-zinc-700 hover:bg-zinc-50"
                         >
                           Edit
                         </a>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            unpublishPost(post.id)
+                          }
+                          className="rounded-md border border-yellow-300 px-4 py-2 font-bold text-yellow-700 hover:bg-yellow-50"
+                        >
+                          Unpublish
+                        </button>
 
                         <a
                           href={`/post/${post.slug}`}
@@ -312,19 +398,28 @@ async function unpublishPost(id: number) {
 
                         <button
                           type="button"
-                          onClick={() => deletePost(post.id)}
+                          onClick={() =>
+                            deletePost(post.id)
+                          }
                           className="rounded-md border border-red-300 px-4 py-2 font-bold text-red-600 hover:bg-red-50"
                         >
                           Delete
                         </button>
+
                       </div>
+
                     </article>
+
                   ))}
+
                 </div>
+
               )}
+
             </section>
           </>
         )}
+
       </main>
 
       <Footer />
