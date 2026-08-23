@@ -1,29 +1,54 @@
 import { Hono } from "hono";
-import { createRequestHandler } from "react-router";
-import posts from "./api/posts";
 
 type Bindings = {
   DB: D1Database;
 };
 
-const app = new Hono<{ Bindings: Bindings }>();
+const posts = new Hono<{ Bindings: Bindings }>();
 
-// API routes
-app.route("/", posts);
+// GET all posts
+posts.get("/api/posts", async (c) => {
+  const { results } = await c.env.DB.prepare(`
+    SELECT
+      id,
+      title,
+      slug,
+      description,
+      hero_image,
+      created_at
+    FROM posts
+    WHERE published = 1
+    ORDER BY created_at DESC
+  `).all();
 
-// React Router handles page loads and form actions.
-app.all("*", (c) => {
-  const requestHandler = createRequestHandler(
-    () => import("virtual:react-router/server-build"),
-    import.meta.env.MODE,
-  );
+  return c.json(results);
+});
 
-  return requestHandler(c.req.raw, {
-    cloudflare: {
-      env: c.env,
-      ctx: c.executionCtx,
-    },
+// GET single post
+posts.get("/api/posts/:slug", async (c) => {
+  const slug = c.req.param("slug");
+
+  const post = await c.env.DB.prepare(`
+    SELECT *
+    FROM posts
+    WHERE slug = ?
+  `)
+    .bind(slug)
+    .first();
+
+  if (!post) {
+    return c.json({ error: "Post not found" }, 404);
+  }
+
+  return c.json(post);
+});
+
+// IMPORT POSTS
+posts.post("/api/import-posts", async (c) => {
+  return c.json({
+    success: true,
+    message: "Import route works"
   });
 });
 
-export default app;
+export default posts;
