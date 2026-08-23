@@ -50,44 +50,25 @@ export default function Admin() {
     loadPosts();
   }, []);
 
-  async function publishPost(id: number) {
-    const post = posts.find((item) => item.id === id);
+ async function publishPost(id: number) {
+  try {
+    const response = await fetch(
+      `/api/posts/${id}/publish`,
+      {
+        method: "POST",
+      },
+    );
 
-    if (!post) {
-      return;
+    if (!response.ok) {
+      throw new Error("Failed to publish.");
     }
 
-    try {
-      const response = await fetch(`/api/posts/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title: post.title,
-          slug: post.slug,
-          description: post.description ?? "",
-          content: post.content,
-          hero_image: post.hero_image,
-          tags: post.tags ?? "",
-          author: post.author ?? "Wichita Forever",
-          draft: 0,
-          published: 1,
-          featured: post.featured,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to publish.");
-      }
-
-      await loadPosts();
-    } catch (err) {
-      console.error(err);
-      setError("Unable to publish post.");
-    }
+    await loadPosts();
+  } catch (err) {
+    console.error(err);
+    setError("Unable to publish post.");
   }
-
+}
   async function deletePost(id: number) {
     const confirmed = window.confirm(
       "Are you sure you want to permanently delete this post?",
