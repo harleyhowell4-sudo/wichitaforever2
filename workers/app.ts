@@ -7,17 +7,6 @@ type Bindings = {
 
 const app = new Hono<{ Bindings: Bindings }>();
 
-// API route
-app.get("/api/posts", async (c) => {
-  const { results } = await c.env.DB.prepare(`
-    SELECT *
-    FROM posts
-    ORDER BY created_at DESC
-  `).all();
-
-  return c.json(results);
-});
-
 // React Router handles page loads and form actions.
 app.all("*", (c) => {
   const requestHandler = createRequestHandler(
