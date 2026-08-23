@@ -28,22 +28,28 @@ type ActionData = {
 };
 
 export async function loader({
+  request,
   params,
 }: {
+  request: Request;
   params: { id?: string };
 }) {
   const id = params.id;
 
   if (!id) {
-    throw new Response("Post ID is required", { status: 400 });
+    throw new Response("Post ID is required", {
+      status: 400,
+    });
   }
 
   const response = await fetch(
-    `${process.env.PUBLIC_URL ?? ""}/api/posts/id/${id}`,
+    new URL(`/api/posts/id/${id}`, request.url),
   );
 
   if (!response.ok) {
-    throw new Response("Post not found", { status: 404 });
+    throw new Response("Post not found", {
+      status: 404,
+    });
   }
 
   return response.json();
@@ -68,8 +74,12 @@ export async function action({
 
   const title = String(formData.get("title") ?? "").trim();
   const slug = String(formData.get("slug") ?? "").trim();
-  const description = String(formData.get("description") ?? "").trim();
-  const content = String(formData.get("content") ?? "").trim();
+  const description = String(
+    formData.get("description") ?? "",
+  ).trim();
+  const content = String(
+    formData.get("content") ?? "",
+  ).trim();
   const tags = String(formData.get("tags") ?? "").trim();
   const author = String(formData.get("author") ?? "").trim();
 
@@ -137,30 +147,32 @@ export default function AdminEdit() {
       <Header />
 
       <main className="mx-auto max-w-4xl px-6 py-12">
-        <div className="mb-8">
-          <p className="text-sm font-bold uppercase tracking-widest text-red-600">
-            Admin
-          </p>
+        <p className="text-sm font-bold uppercase tracking-widest text-red-600">
+          Admin
+        </p>
 
-          <h1 className="mt-2 text-4xl font-black tracking-tight text-zinc-950">
-            Edit Article
-          </h1>
-        </div>
+        <h1 className="mt-2 text-4xl font-black tracking-tight text-zinc-950">
+          Edit Article
+        </h1>
+
+        <p className="mt-3 text-zinc-600">
+          Update the article and save your changes.
+        </p>
 
         {result?.success && (
-          <div className="mb-6 rounded-md bg-green-50 p-4 text-green-800">
+          <div className="mt-6 rounded-md bg-green-50 p-4 text-green-800">
             Post saved successfully.
           </div>
         )}
 
         {result?.error && (
-          <div className="mb-6 rounded-md bg-red-50 p-4 text-red-800">
+          <div className="mt-6 rounded-md bg-red-50 p-4 text-red-800">
             {result.error}
           </div>
         )}
 
-        <Form method="post" className="space-y-6">
-          <label className="block font-semibold">
+        <Form method="post" className="mt-8 space-y-6">
+          <label className="block font-semibold text-zinc-900">
             Title
 
             <input
@@ -171,7 +183,7 @@ export default function AdminEdit() {
             />
           </label>
 
-          <label className="block font-semibold">
+          <label className="block font-semibold text-zinc-900">
             Slug
 
             <input
@@ -182,7 +194,7 @@ export default function AdminEdit() {
             />
           </label>
 
-          <label className="block font-semibold">
+          <label className="block font-semibold text-zinc-900">
             Description
 
             <input
@@ -192,7 +204,7 @@ export default function AdminEdit() {
             />
           </label>
 
-          <label className="block font-semibold">
+          <label className="block font-semibold text-zinc-900">
             Tags
 
             <input
@@ -202,17 +214,19 @@ export default function AdminEdit() {
             />
           </label>
 
-          <label className="block font-semibold">
+          <label className="block font-semibold text-zinc-900">
             Author
 
             <input
               name="author"
-              defaultValue={post.author ?? "Wichita Forever"}
+              defaultValue={
+                post.author ?? "Wichita Forever"
+              }
               className="mt-2 block w-full rounded-md border border-zinc-300 px-3 py-2"
             />
           </label>
 
-          <label className="block font-semibold">
+          <label className="block font-semibold text-zinc-900">
             Article
 
             <textarea
@@ -225,7 +239,9 @@ export default function AdminEdit() {
           </label>
 
           <div className="rounded-xl border border-zinc-200 p-5">
-            <h2 className="font-bold">Publication</h2>
+            <h2 className="font-bold text-zinc-950">
+              Publication
+            </h2>
 
             <div className="mt-4 space-y-3">
               <label className="flex gap-2">
@@ -268,7 +284,7 @@ export default function AdminEdit() {
 
             <a
               href="/admin"
-              className="rounded-md border border-zinc-300 px-5 py-3 font-bold text-zinc-700"
+              className="rounded-md border border-zinc-300 px-5 py-3 font-bold text-zinc-700 hover:bg-zinc-50"
             >
               Cancel
             </a>
