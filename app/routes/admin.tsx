@@ -7,6 +7,8 @@ type Post = {
   title: string;
   slug: string;
   description: string | null;
+  content: string;
+  hero_image: string | null;
   tags: string | null;
   author: string | null;
   created_at: string | null;
@@ -65,8 +67,8 @@ export default function Admin() {
           title: post.title,
           slug: post.slug,
           description: post.description ?? "",
-          content: "",
-          hero_image: null,
+          content: post.content,
+          hero_image: post.hero_image,
           tags: post.tags ?? "",
           author: post.author ?? "Wichita Forever",
           draft: 0,
@@ -154,6 +156,7 @@ export default function Admin() {
           </div>
         ) : (
           <>
+            {/* DRAFTS */}
             <section className="mt-10">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-2xl font-black text-zinc-950">
@@ -203,9 +206,20 @@ export default function Admin() {
                           <p className="mt-3 text-sm text-zinc-500">
                             {post.author || "Unknown author"}
                           </p>
+
+                          <p className="mt-1 text-xs text-zinc-400">
+                            ID: {post.id} · /post/{post.slug}
+                          </p>
                         </div>
 
-                        <div className="flex shrink-0 gap-2">
+                        <div className="flex shrink-0 flex-wrap gap-2">
+                          <a
+                            href={`/admin/edit/${post.id}`}
+                            className="rounded-md border border-zinc-300 px-4 py-2 font-bold text-zinc-700 hover:bg-zinc-50"
+                          >
+                            Edit
+                          </a>
+
                           <button
                             type="button"
                             onClick={() => publishPost(post.id)}
@@ -236,6 +250,7 @@ export default function Admin() {
               )}
             </section>
 
+            {/* PUBLISHED */}
             <section className="mt-12">
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-2xl font-black text-zinc-950">
@@ -247,53 +262,66 @@ export default function Admin() {
                 </span>
               </div>
 
-              <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm">
-                {published.map((post) => (
-                  <article
-                    key={post.id}
-                    className="flex flex-col justify-between gap-4 border-b border-zinc-200 p-5 last:border-b-0 md:flex-row md:items-center"
-                  >
-                    <div>
-                      <div className="flex flex-wrap gap-2">
-                        <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-bold text-green-800">
-                          PUBLISHED
-                        </span>
-
-                        {post.featured === 1 && (
-                          <span className="rounded-full bg-red-100 px-2 py-1 text-xs font-bold text-red-700">
-                            FEATURED
+              {published.length === 0 ? (
+                <div className="rounded-xl border border-dashed border-zinc-300 p-8 text-zinc-500">
+                  No published posts.
+                </div>
+              ) : (
+                <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm">
+                  {published.map((post) => (
+                    <article
+                      key={post.id}
+                      className="flex flex-col justify-between gap-4 border-b border-zinc-200 p-5 last:border-b-0 md:flex-row md:items-center"
+                    >
+                      <div>
+                        <div className="flex flex-wrap gap-2">
+                          <span className="rounded-full bg-green-100 px-2 py-1 text-xs font-bold text-green-800">
+                            PUBLISHED
                           </span>
-                        )}
+
+                          {post.featured === 1 && (
+                            <span className="rounded-full bg-red-100 px-2 py-1 text-xs font-bold text-red-700">
+                              FEATURED
+                            </span>
+                          )}
+                        </div>
+
+                        <h3 className="mt-2 font-bold text-zinc-950">
+                          {post.title}
+                        </h3>
+
+                        <p className="mt-1 text-sm text-zinc-500">
+                          {post.views} views · /post/{post.slug}
+                        </p>
                       </div>
 
-                      <h3 className="mt-2 font-bold text-zinc-950">
-                        {post.title}
-                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        <a
+                          href={`/admin/edit/${post.id}`}
+                          className="rounded-md border border-zinc-300 px-4 py-2 font-bold text-zinc-700 hover:bg-zinc-50"
+                        >
+                          Edit
+                        </a>
 
-                      <p className="mt-1 text-sm text-zinc-500">
-                        {post.views} views · /post/{post.slug}
-                      </p>
-                    </div>
+                        <a
+                          href={`/post/${post.slug}`}
+                          className="rounded-md border border-zinc-300 px-4 py-2 font-bold text-zinc-700 hover:bg-zinc-50"
+                        >
+                          View
+                        </a>
 
-                    <div className="flex gap-2">
-                      <a
-                        href={`/post/${post.slug}`}
-                        className="rounded-md border border-zinc-300 px-4 py-2 font-bold text-zinc-700 hover:bg-zinc-50"
-                      >
-                        View
-                      </a>
-
-                      <button
-                        type="button"
-                        onClick={() => deletePost(post.id)}
-                        className="rounded-md border border-red-300 px-4 py-2 font-bold text-red-600 hover:bg-red-50"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </article>
-                ))}
-              </div>
+                        <button
+                          type="button"
+                          onClick={() => deletePost(post.id)}
+                          className="rounded-md border border-red-300 px-4 py-2 font-bold text-red-600 hover:bg-red-50"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              )}
             </section>
           </>
         )}
