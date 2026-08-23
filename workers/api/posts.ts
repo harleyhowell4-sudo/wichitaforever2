@@ -191,7 +191,56 @@ posts.post("/api/posts", async (c) => {
     );
   }
 });
+// UNPUBLISH POST
+posts.post("/api/posts/:id/unpublish", async (c) => {
+  try {
+    const id = c.req.param("id");
 
+    const existing = await c.env.DB.prepare(`
+      SELECT id
+      FROM posts
+      WHERE id = ?
+    `)
+      .bind(id)
+      .first();
+
+    if (!existing) {
+      return c.json(
+        {
+          error: "Post not found",
+        },
+        404,
+      );
+    }
+
+    const now = new Date().toISOString();
+
+    await c.env.DB.prepare(`
+      UPDATE posts
+      SET
+        draft = 1,
+        published = 0,
+        updated_at = ?
+      WHERE id = ?
+    `)
+      .bind(now, id)
+      .run();
+
+    return c.json({
+      success: true,
+      message: "Post unpublished successfully",
+    });
+  } catch (error) {
+    console.error(error);
+
+    return c.json(
+      {
+        error: "Failed to unpublish post",
+      },
+      500,
+    );
+  }
+});
 // PUBLISH POST
 posts.post("/api/posts/:id/publish", async (c) => {
   try {
