@@ -69,6 +69,25 @@ export default function Admin() {
     setError("Unable to publish post.");
   }
 }
+async function unpublishPost(id: number) {
+  try {
+    const response = await fetch(
+      `/api/posts/${id}/unpublish`,
+      {
+        method: "POST",
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to unpublish.");
+    }
+
+    await loadPosts();
+  } catch (err) {
+    console.error(err);
+    setError("Unable to unpublish post.");
+  }
+}
   async function deletePost(id: number) {
     const confirmed = window.confirm(
       "Are you sure you want to permanently delete this post?",
