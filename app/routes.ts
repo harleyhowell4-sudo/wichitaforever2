@@ -8,5 +8,5 @@ export default [
   route("/technical", "routes/technical.tsx"),
   route("/write", "routes/write.tsx"),
   route("/admin", "routes/admin.tsx"),
-route("/admin/edit/:id", "routes/admin-edit.tsx"),
+  route("/admin/edit/:id", "routes/admin-edit.tsx"),
 ] satisfies RouteConfig;
