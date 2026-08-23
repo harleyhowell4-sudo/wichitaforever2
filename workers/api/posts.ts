@@ -31,6 +31,7 @@ posts.get("/api/posts", async (c) => {
 
   return c.json(results);
 });
+
 // GET all posts for admin
 posts.get("/api/admin/posts", async (c) => {
   const { results } = await c.env.DB.prepare(`
@@ -179,30 +180,8 @@ posts.put("/api/posts/:id", async (c) => {
     const id = c.req.param("id");
     const body = await c.req.json();
 
-    const {
-      title,
-      slug,
-      description = "",
-      content,
-      hero_image = null,
-      tags = "",
-      author = "",
-      draft = 0,
-      published = 1,
-      featured = 0,
-    } = body;
-
-    if (!title || !slug || !content) {
-      return c.json(
-        {
-          error: "title, slug, and content are required",
-        },
-        400,
-      );
-    }
-
     const existing = await c.env.DB.prepare(`
-      SELECT id
+      SELECT *
       FROM posts
       WHERE id = ?
     `)
@@ -215,6 +194,44 @@ posts.put("/api/posts/:id", async (c) => {
           error: "Post not found",
         },
         404,
+      );
+    }
+
+    const title = body.title ?? existing.title;
+    const slug = body.slug ?? existing.slug;
+    const description = body.description ?? existing.description ?? "";
+    const content = body.content ?? existing.content;
+    const hero_image = body.hero_image ?? existing.hero_image;
+    const tags = body.tags ?? existing.tags ?? "";
+    const author = body.author ?? existing.author ?? "Wichita Forever";
+
+    const draft =
+      body.draft === undefined
+        ? existing.draft
+        : body.draft
+          ? 1
+          : 0;
+
+    const published =
+      body.published === undefined
+        ? existing.published
+        : body.published
+          ? 1
+          : 0;
+
+    const featured =
+      body.featured === undefined
+        ? existing.featured
+        : body.featured
+          ? 1
+          : 0;
+
+    if (!title || !slug || !content) {
+      return c.json(
+        {
+          error: "title, slug, and content are required",
+        },
+        400,
       );
     }
 
@@ -263,9 +280,9 @@ posts.put("/api/posts/:id", async (c) => {
         tags,
         author,
         now,
-        draft ? 1 : 0,
-        published ? 1 : 0,
-        featured ? 1 : 0,
+        draft,
+        published,
+        featured,
         id,
       )
       .run();
