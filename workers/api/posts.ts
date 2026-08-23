@@ -55,6 +55,24 @@ posts.get("/api/admin/posts", async (c) => {
   return c.json(results);
 });
 
+// GET single post by ID
+posts.get("/api/posts/id/:id", async (c) => {
+  const id = c.req.param("id");
+
+  const post = await c.env.DB.prepare(`
+    SELECT *
+    FROM posts
+    WHERE id = ?
+  `)
+    .bind(id)
+    .first();
+
+  if (!post) {
+    return c.json({ error: "Post not found" }, 404);
+  }
+
+  return c.json(post);
+});
 // GET single post
 posts.get("/api/posts/:slug", async (c) => {
   const slug = c.req.param("slug");
