@@ -31,6 +31,28 @@ posts.get("/api/posts", async (c) => {
 
   return c.json(results);
 });
+// GET all posts for admin
+posts.get("/api/admin/posts", async (c) => {
+  const { results } = await c.env.DB.prepare(`
+    SELECT
+      id,
+      title,
+      slug,
+      description,
+      tags,
+      author,
+      created_at,
+      updated_at,
+      draft,
+      published,
+      featured,
+      views
+    FROM posts
+    ORDER BY created_at DESC
+  `).all();
+
+  return c.json(results);
+});
 
 // GET single post
 posts.get("/api/posts/:slug", async (c) => {
