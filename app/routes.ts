@@ -7,4 +7,5 @@ export default [
   route("/about", "routes/about.tsx"),
   route("/technical", "routes/technical.tsx"),
   route("/write", "routes/write.tsx"),
+  route("/admin", "routes/admin.tsx"),
 ] satisfies RouteConfig;
