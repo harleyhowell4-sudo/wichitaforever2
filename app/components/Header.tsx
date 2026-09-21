@@ -9,6 +9,7 @@ export default function Header() {
           className="text-3xl font-black tracking-tight hover:text-red-400 transition-colors"
         >
           Wichita Forever
+          Home for all of Wichita's Fake News
         </Link>
 
         <nav className="flex gap-6 text-sm uppercase font-semibold tracking-wide">
