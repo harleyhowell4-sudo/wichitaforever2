@@ -4,6 +4,7 @@ export default function Hero() {
       <div className="mx-auto max-w-4xl px-6">
         <h1 className="text-6xl font-black tracking-tight">
           Wichita Forever
+          Home for all of Wichita's fake news
         </h1>
 
         <p className="mt-6 text-xl text-zinc-300">
