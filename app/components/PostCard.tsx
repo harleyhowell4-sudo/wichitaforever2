@@ -6,6 +6,7 @@ type PostCardProps = {
   slug: string;
   date?: string;
   heroImage?: string | null;
+  featured?: boolean;
 };
 
 export default function PostCard({
@@ -14,56 +15,31 @@ export default function PostCard({
   slug,
   date,
   heroImage,
+  featured = false,
 }: PostCardProps) {
   return (
     <article
-      style={{
-        border: "1px solid #ddd",
-        borderRadius: "10px",
-        overflow: "hidden",
-        marginBottom: "1.5rem",
-        transition: "0.2s ease",
-      }}
+      className={`story-card${featured ? " story-card--featured" : ""}${
+        heroImage ? "" : " story-card--no-image"
+      }`}
     >
-      <Link to={`/post/${slug}`} style={{ textDecoration: "none", color: "inherit" }}>
-        {heroImage && (
+      {heroImage && (
+        <Link to={`/post/${slug}`} className="story-image-link" aria-label={`Read ${title}`}>
           <img
             src={heroImage}
             alt={title}
-            style={{
-              width: "100%",
-              height: "800px",
-              objectFit: "cover",
-              display: "block",
-            }}
+            className="story-image"
           />
-        )}
-      </Link>
+        </Link>
+      )}
 
-      <div style={{ padding: "1.5rem" }}>
-        <h2 style={{ marginTop: 0 }}>
-          <Link
-            to={`/post/${slug}`}
-            style={{
-              textDecoration: "none",
-              color: "inherit",
-            }}
-          >
-            {title}
-          </Link>
+      <div className="story-copy">
+        <p className="story-kicker">{featured ? "The lead story" : "From the desk"}</p>
+        <h2>
+          <Link to={`/post/${slug}`}>{title}</Link>
         </h2>
-
-        <p>{description}</p>
-
-        {date && (
-          <small
-            style={{
-              color: "#777",
-            }}
-          >
-            {date}
-          </small>
-        )}
+        {description && <p className="story-description">{description}</p>}
+        {date && <time className="story-date">{date}</time>}
       </div>
     </article>
   );

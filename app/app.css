@@ -1,16 +1,428 @@
 @import "tailwindcss" source(".");
 
 @theme {
-	--font-sans:
-		"Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-		"Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+	--font-sans: "DM Sans", ui-sans-serif, sans-serif;
+	--font-serif: "Newsreader", Georgia, serif;
 }
 
-html,
-body {
-	@apply bg-white dark:bg-gray-950;
+:root {
+	font-family: "DM Sans", sans-serif;
+	color: #20211e;
+	background: #faf9f5;
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	--paper: #faf9f5;
+	--ink: #20211e;
+	--muted: #6f706b;
+	--line: #d9d7ce;
+	--red: #c84432;
+	--green: #405b4a;
+}
 
-	@media (prefers-color-scheme: dark) {
-		color-scheme: dark;
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	min-width: 320px;
+	background: var(--paper);
+}
+
+a {
+	color: inherit;
+}
+
+.site-header {
+	position: relative;
+	z-index: 1;
+	border-bottom: 1px solid var(--line);
+	background: var(--paper);
+}
+
+.masthead-inner {
+	width: min(1160px, calc(100% - 48px));
+	min-height: 92px;
+	margin: 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 32px;
+}
+
+.brand-lockup {
+	text-decoration: none;
+	display: grid;
+	gap: 1px;
+}
+
+.brand-name {
+	font: 700 30px/1 "Newsreader", Georgia, serif;
+	letter-spacing: 0;
+}
+
+.brand-note,
+.eyebrow,
+.story-kicker {
+	font-size: 10px;
+	font-weight: 700;
+	letter-spacing: 0.13em;
+	text-transform: uppercase;
+}
+
+.brand-note {
+	color: var(--muted);
+}
+
+.site-nav {
+	display: flex;
+	align-items: center;
+	gap: clamp(14px, 2.5vw, 34px);
+}
+
+.site-nav a {
+	font-size: 12px;
+	font-weight: 700;
+	text-decoration: none;
+	transition: color 160ms ease;
+}
+
+.site-nav a:hover,
+.site-nav a:focus-visible {
+	color: var(--red);
+}
+
+.page-shell {
+	width: min(1160px, calc(100% - 48px));
+	margin: 0 auto;
+}
+
+.hero-banner {
+	position: relative;
+	min-height: 300px;
+	margin: 34px 0 0;
+	padding: clamp(32px, 6vw, 72px);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 32px;
+	overflow: hidden;
+	background-color: var(--green);
+	background-image: radial-gradient(rgba(255, 255, 255, 0.12) 0.8px, transparent 0.8px);
+	background-size: 10px 10px;
+	color: white;
+}
+
+.hero-copy {
+	position: relative;
+	z-index: 1;
+	max-width: 710px;
+}
+
+.hero-banner .eyebrow {
+	margin: 0 0 15px;
+	color: #e2b8a2;
+}
+
+.hero-banner h1 {
+	max-width: 650px;
+	margin: 0;
+	font: 600 68px/0.98 "Newsreader", Georgia, serif;
+	letter-spacing: 0;
+}
+
+.hero-deck {
+	max-width: 530px;
+	margin: 20px 0 0;
+	color: rgba(255, 255, 255, 0.82);
+	font-size: 15px;
+	line-height: 1.65;
+}
+
+.hero-mark {
+	position: relative;
+	width: 142px;
+	height: 142px;
+	flex: 0 0 142px;
+	display: grid;
+	place-items: center;
+	border: 1px solid rgba(255, 255, 255, 0.56);
+	border-radius: 50%;
+	color: #e8b4a0;
+	font: 500 54px/1 "Newsreader", Georgia, serif;
+	transform: rotate(-12deg);
+}
+
+.hero-mark::before,
+.hero-mark::after {
+	position: absolute;
+	content: "";
+	width: 120%;
+	height: 1px;
+	background: rgba(255, 255, 255, 0.42);
+}
+
+.hero-mark::after {
+	transform: rotate(90deg);
+}
+
+.hero-mark i {
+	position: absolute;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: var(--red);
+}
+
+.latest-section {
+	margin: 56px 0 80px;
+}
+
+.section-heading {
+	display: flex;
+	align-items: end;
+	gap: 28px;
+	margin-bottom: 22px;
+}
+
+.section-heading .eyebrow,
+.about-copy .eyebrow {
+	margin: 0 0 6px;
+	color: var(--red);
+}
+
+.section-heading h2,
+.about-copy h2 {
+	margin: 0;
+	font: 600 38px/1 "Newsreader", Georgia, serif;
+	letter-spacing: 0;
+}
+
+.section-heading > div > p:not(.eyebrow) {
+	margin: 9px 0 0;
+	color: var(--muted);
+}
+
+.section-rule {
+	height: 1px;
+	flex: 1;
+	margin-bottom: 6px;
+	background: var(--line);
+}
+
+.story-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	column-gap: 28px;
+}
+
+.story-card {
+	min-width: 0;
+	padding: 22px 0;
+	display: grid;
+	grid-template-columns: minmax(120px, 0.8fr) minmax(0, 1.2fr);
+	align-items: start;
+	gap: 20px;
+	border-top: 1px solid var(--line);
+}
+
+.story-card--featured {
+	grid-column: 1 / -1;
+	grid-template-columns: minmax(0, 1.35fr) minmax(250px, 0.85fr);
+	align-items: center;
+	padding: 0 0 28px;
+	border-top: 0;
+	border-bottom: 1px solid var(--line);
+	margin-bottom: 4px;
+}
+
+.story-card--no-image {
+	grid-template-columns: minmax(0, 1fr);
+}
+
+.story-image-link {
+	display: block;
+	min-width: 0;
+	background: #e5e2d9;
+}
+
+.story-image {
+	display: block;
+	width: 100%;
+	aspect-ratio: 4 / 3;
+	object-fit: cover;
+}
+
+.story-card--featured .story-image {
+	aspect-ratio: 16 / 10;
+}
+
+.story-copy {
+	min-width: 0;
+}
+
+.story-kicker {
+	margin: 0 0 8px;
+	color: var(--red);
+}
+
+.story-copy h2 {
+	margin: 0;
+	font: 600 24px/1.08 "Newsreader", Georgia, serif;
+	letter-spacing: 0;
+}
+
+.story-card--featured .story-copy h2 {
+	font-size: 38px;
+}
+
+.story-copy h2 a {
+	text-decoration: none;
+}
+
+.story-copy h2 a:hover {
+	color: var(--red);
+}
+
+.story-description {
+	margin: 10px 0 12px;
+	color: #565751;
+	font-size: 14px;
+	line-height: 1.6;
+}
+
+.story-date {
+	color: var(--muted);
+	font-size: 11px;
+}
+
+.empty-state {
+	padding: 22px 0;
+	border-top: 1px solid var(--line);
+	color: var(--muted);
+}
+
+.about-copy {
+	max-width: 760px;
+	font-size: 16px;
+	line-height: 1.75;
+}
+
+.site-footer {
+	padding: 28px 24px 32px;
+	border-top: 1px solid var(--line);
+	text-align: center;
+}
+
+.site-footer p {
+	margin: 0 0 5px;
+	font: 600 19px/1.2 "Newsreader", Georgia, serif;
+}
+
+.site-footer p span {
+	color: var(--red);
+}
+
+.site-footer small {
+	color: var(--muted);
+	font-size: 11px;
+}
+
+@media (max-width: 720px) {
+	.masthead-inner {
+		width: min(100% - 32px, 1160px);
+		min-height: 0;
+		padding: 17px 0 14px;
+		align-items: flex-start;
+		flex-direction: column;
+		gap: 15px;
+	}
+
+	.brand-name {
+		font-size: 27px;
+	}
+
+	.site-nav {
+		width: 100%;
+		justify-content: space-between;
+		gap: 10px;
+	}
+
+	.site-nav a {
+		font-size: 11px;
+	}
+
+	.page-shell {
+		width: min(100% - 32px, 1160px);
+	}
+
+	.hero-banner {
+		min-height: 270px;
+		margin-top: 20px;
+		padding: 32px 26px;
+	}
+
+	.hero-mark {
+		position: absolute;
+		right: -42px;
+		bottom: -38px;
+		width: 130px;
+		height: 130px;
+		font-size: 46px;
+		opacity: 0.7;
+	}
+
+	.hero-copy {
+		max-width: 100%;
+	}
+
+	.hero-banner h1 {
+		font-size: 48px;
+	}
+
+	.hero-deck {
+		max-width: 420px;
+		font-size: 14px;
+	}
+
+	.latest-section {
+		margin: 42px 0 58px;
+	}
+
+	.story-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.story-card--featured {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 17px;
+	}
+
+	.story-card--featured .story-copy h2 {
+		font-size: 32px;
+	}
+
+	.story-card:not(.story-card--featured) {
+		grid-template-columns: minmax(110px, 0.8fr) minmax(0, 1.2fr);
+		gap: 14px;
+	}
+
+	.story-card:not(.story-card--featured) .story-copy h2 {
+		font-size: 21px;
+	}
+
+	.section-heading h2,
+	.about-copy h2 {
+		font-size: 33px;
+	}
+}
+
+@media (max-width: 380px) {
+	.site-nav a {
+		font-size: 10px;
+	}
+
+	.story-card:not(.story-card--featured) {
+		grid-template-columns: 1fr;
 	}
 }

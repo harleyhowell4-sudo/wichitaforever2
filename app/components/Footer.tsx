@@ -1,14 +1,8 @@
 export default function Footer() {
     return (
-        <footer
-            style={{
-                marginTop: 
-                "4rem",
-                padding: "2rem",
-                borderTop: "1px solid #ddd",
-                textAlign: "center",
-            }}
-        > {new Date().getFullYear()} &copy; Wichita Forever Fake News D1. All rights reserved.
+        <footer className="site-footer">
+            <p>Wichita Forever <span>·</span> Wichita, Kansas</p>
+            <small>{new Date().getFullYear()} · Independent news from an alternate reality.</small>
         </footer>
     );
 }

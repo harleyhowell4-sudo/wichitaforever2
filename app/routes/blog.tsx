@@ -45,36 +45,39 @@ export default function Blog({ loaderData }: BlogComponentProps) {
   return (
     <>
       <Header />
-      <main
-        style={{
-          maxWidth: "900px",
-          margin: "0 auto",
-          padding: "2rem",
-        }}
-      >
+      <main className="page-shell">
         <Hero />
 
-        <section style={{ marginTop: "4rem" }}>
-          <h2>Latest Posts</h2>
+        <section className="latest-section">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">The newsroom</p>
+              <h2>Latest posts</h2>
+            </div>
+            <span className="section-rule" aria-hidden="true" />
+          </div>
 
           {posts.length === 0 && (
-            <p>No posts yet — run the migration to import the old Astro posts.</p>
+            <p className="empty-state">No posts yet. The newsroom is quiet for now.</p>
           )}
 
-          {posts.map((post) => (
-            <PostCard
-              key={post.id}
-              title={post.title}
-              description={post.description ?? ""}
-              slug={post.slug}
-              heroImage={post.hero_image}
-              date={new Date(post.created_at).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            />
-          ))}
+          <div className="story-grid">
+            {posts.map((post, index) => (
+              <PostCard
+                key={post.id}
+                title={post.title}
+                description={post.description ?? ""}
+                slug={post.slug}
+                heroImage={post.hero_image}
+                featured={index === 0}
+                date={new Date(post.created_at).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              />
+            ))}
+          </div>
         </section>
       </main>
       <Footer />

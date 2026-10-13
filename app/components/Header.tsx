@@ -2,17 +2,14 @@ import { Link } from "react-router";
 
 export default function Header() {
   return (
-    <header className="border-b bg-zinc-950 text-white">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-        <Link
-          to="/"
-          className="text-3xl font-black tracking-tight hover:text-red-400 transition-colors"
-        >
-          Wichita Forever
-          Home for all of Wichita's Fake News
+    <header className="site-header">
+      <div className="masthead-inner">
+        <Link to="/" className="brand-lockup" aria-label="Wichita Forever home">
+          <span className="brand-name">Wichita Forever</span>
+          <span className="brand-note">Independent news. Unverified reality.</span>
         </Link>
 
-        <nav className="flex gap-6 text-sm uppercase font-semibold tracking-wide">
+        <nav className="site-nav" aria-label="Main navigation">
           <Link to="/">Home</Link>
           <Link to="/blog">News</Link>
           <Link to="/technical">Technical</Link>

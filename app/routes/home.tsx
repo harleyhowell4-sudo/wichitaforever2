@@ -44,38 +44,39 @@ export default function Home({ loaderData }: HomeComponentProps) {
   return (
     <>
       <Header />
-      <main
-        style={{
-          maxWidth: "900px",
-          margin: "0 auto",
-          padding: "2rem",
-        }}
-      >
+      <main className="page-shell">
         <Hero />
 
-        <section>
-          <h2>Welcome to the Wichita Forever Fake News Division.</h2>
-        </section>
+        <section className="latest-section">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Fresh off the wire</p>
+              <h2>Latest stories</h2>
+            </div>
+            <span className="section-rule" aria-hidden="true" />
+          </div>
 
-        <section>
-          <h2>Latest Stories</h2>
-
-          {posts.length === 0 && <p>No posts yet.</p>}
-
-          {posts.map((post) => (
-            <PostCard
-              key={post.id}
-              title={post.title}
-              description={post.description ?? ""}
-              slug={post.slug}
-              heroImage={post.hero_image}
-              date={new Date(post.created_at).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            />
-          ))}
+          {posts.length === 0 ? (
+            <p className="empty-state">No stories in the newsroom yet.</p>
+          ) : (
+            <div className="story-grid">
+              {posts.map((post, index) => (
+                <PostCard
+                  key={post.id}
+                  title={post.title}
+                  description={post.description ?? ""}
+                  slug={post.slug}
+                  heroImage={post.hero_image}
+                  featured={index === 0}
+                  date={new Date(post.created_at).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                />
+              ))}
+            </div>
+          )}
         </section>
       </main>
       <Footer />

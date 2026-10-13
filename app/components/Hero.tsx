@@ -1,19 +1,17 @@
 export default function Hero() {
   return (
-    <section className="bg-zinc-950 py-24 text-center text-white">
-      <div className="mx-auto max-w-4xl px-6">
-        <h1 className="text-6xl font-black tracking-tight">
-          Wichita Forever
-          Home for all of Wichita's fake news
-        </h1>
-
-        <p className="mt-6 text-xl text-zinc-300">
-           
+    <section className="hero-banner">
+      <div className="hero-copy">
+        <p className="eyebrow">Wichita, Kansas · The Mostly Local Desk</p>
+        <h1>Wichita, with the volume turned up.</h1>
+        <p className="hero-deck">
+          Local headlines from a parallel Wichita, where the stories are made up
+          and the civic pride is very real.
         </p>
-
-        <p className="mx-auto mt-8 max-w-2xl text-lg text-zinc-400">
-          
-        </p>
+      </div>
+      <div className="hero-mark" aria-hidden="true">
+        <span>WF</span>
+        <i />
       </div>
     </section>
   );

@@ -6,16 +6,11 @@ export default function About() {
   return (
     <>
       <Header />
-      <main
-        style={{
-          maxWidth: "900px",
-          margin: "0 auto",
-          padding: "2rem",
-        }}
-      >
+      <main className="page-shell">
         <Hero />
 
-        <section style={{ marginTop: "2rem" }}>
+        <section className="latest-section about-copy">
+          <p className="eyebrow">A brief explanation</p>
           <h2>About Wichita Forever</h2>
           <p>
             ---

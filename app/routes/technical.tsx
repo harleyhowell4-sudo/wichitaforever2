@@ -27,32 +27,35 @@ export default function Technical({ loaderData }: { loaderData: { posts: PostSum
   return (
     <>
       <Header />
-      <main
-        style={{
-          maxWidth: "900px",
-          margin: "0 auto",
-          padding: "2rem",
-        }}
-      >
+      <main className="page-shell">
         <Hero />
 
-        <section style={{ marginTop: "2rem" }}>
-          <h2>Technical Notes</h2>
-          <p>Technical writeups and implementation notes.</p>
+        <section className="latest-section">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Behind the headlines</p>
+              <h2>Technical notes</h2>
+              <p>Technical writeups and implementation notes.</p>
+            </div>
+            <span className="section-rule" aria-hidden="true" />
+          </div>
         </section>
-        {loaderData.posts.length === 0 && <p>No technical notes published yet.</p>}
-        {loaderData.posts.map((post) => (
-          <PostCard
-            key={post.id}
-            title={post.title}
-            description={post.description ?? ""}
-            slug={post.slug}
-            heroImage={post.hero_image}
-            date={new Date(post.created_at).toLocaleDateString("en-US", {
-              year: "numeric", month: "long", day: "numeric",
-            })}
-          />
-        ))}
+        {loaderData.posts.length === 0 && <p className="empty-state">No technical notes published yet.</p>}
+        <div className="story-grid">
+          {loaderData.posts.map((post, index) => (
+            <PostCard
+              key={post.id}
+              title={post.title}
+              description={post.description ?? ""}
+              slug={post.slug}
+              heroImage={post.hero_image}
+              featured={index === 0}
+              date={new Date(post.created_at).toLocaleDateString("en-US", {
+                year: "numeric", month: "long", day: "numeric",
+              })}
+            />
+          ))}
+        </div>
       </main>
       <Footer />
     </>
