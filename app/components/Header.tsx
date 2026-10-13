@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, NavLink } from "react-router";
 
 export default function Header() {
   return (
@@ -6,16 +6,16 @@ export default function Header() {
       <div className="masthead-inner">
         <Link to="/" className="brand-lockup" aria-label="Wichita Forever home">
           <span className="brand-name">Wichita Forever</span>
-          <span className="brand-note"> · Wichita, Kansas · </span>
+          <span className="brand-note"> · Fake News Division · </span>
         </Link>
 
         <nav className="site-nav" aria-label="Main navigation">
-          <Link to="/">Home</Link>
-          <Link to="/blog">News</Link>
-          <Link to="/videos">Videos</Link>
-          <Link to="/technical">Technical</Link>
-          <Link to="/write">Write</Link>
-          <Link to="/about">About</Link>
+          <NavLink to="/" end>Home</NavLink>
+          <NavLink to="/blog">News</NavLink>
+          <NavLink to="/videos">Videos</NavLink>
+          <NavLink to="/technical">Technical</NavLink>
+          <NavLink to="/write">Write</NavLink>
+          <NavLink to="/about">About</NavLink>
         </nav>
       </div>
     </header>
