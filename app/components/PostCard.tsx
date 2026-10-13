@@ -29,6 +29,9 @@ export default function PostCard({
             src={heroImage}
             alt={title}
             className="story-image"
+            loading={featured ? "eager" : "lazy"}
+            fetchPriority={featured ? "high" : "auto"}
+            decoding="async"
           />
         </Link>
       )}

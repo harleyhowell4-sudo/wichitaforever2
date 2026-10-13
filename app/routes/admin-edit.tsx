@@ -7,6 +7,8 @@ import {
 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { hasValidAdminSession } from "../../workers/auth";
+import { readLimitedFormData } from "../../workers/request-body";
 
 type Post = {
   id: number;
@@ -28,6 +30,7 @@ type ActionData = {
 };
 
 type LoaderArgs = {
+  request: Request;
   params: {
     id?: string;
   };
@@ -43,9 +46,14 @@ type ActionArgs = {
 };
 
 export async function loader({
+  request,
   params,
   context,
 }: LoaderArgs) {
+  if (!(await hasValidAdminSession(request, context.cloudflare.env.ADMIN_TOKEN))) {
+    throw new Response(null, { status: 302, headers: { Location: "/admin" } });
+  }
+
   const id = params.id;
 
   if (!id) {
@@ -85,11 +93,19 @@ export async function loader({
   return post;
 }
 
+export function headers() {
+  return { "Cache-Control": "no-store" };
+}
+
 export async function action({
   request,
   params,
   context,
 }: ActionArgs) {
+  if (!(await hasValidAdminSession(request, context.cloudflare.env.ADMIN_TOKEN))) {
+    throw new Response(null, { status: 302, headers: { Location: "/admin" } });
+  }
+
   const id = params.id;
 
   if (!id) {
@@ -98,7 +114,7 @@ export async function action({
     } satisfies ActionData;
   }
 
-  const formData = await request.formData();
+  const formData = await readLimitedFormData(request);
 
   const title = String(formData.get("title") ?? "").trim();
   const slug = String(formData.get("slug") ?? "").trim();
@@ -109,7 +125,8 @@ export async function action({
   const author = String(formData.get("author") ?? "").trim();
 
   const draft = formData.get("draft") === "on" ? 1 : 0;
-  const published = formData.get("published") === "on" ? 1 : 0;
+  const requestedPublished = formData.get("published") === "on" ? 1 : 0;
+  const published = draft === 1 ? 0 : requestedPublished;
   const featured = formData.get("featured") === "on" ? 1 : 0;
 
   if (!title || !slug || !content) {

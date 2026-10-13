@@ -1,6 +1,60 @@
 import { useEffect, useState } from "react";
+import { data, Form, useActionData } from "react-router";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import {
+  clearAdminSessionCookie,
+  createAdminSessionCookie,
+  verifyAdminToken,
+} from "../../workers/auth";
+import { readLimitedFormData } from "../../workers/request-body";
+
+type ActionData = {
+  error?: string;
+  success?: boolean;
+};
+
+export async function action({
+  request,
+  context,
+}: {
+  request: Request;
+  context: any;
+}) {
+  const formData = await readLimitedFormData(request, 4096);
+  const headers = new Headers({ Location: "/admin" });
+
+  if (formData.get("intent") === "logout") {
+    headers.set("Set-Cookie", clearAdminSessionCookie(request.url));
+    return new Response(null, { status: 303, headers });
+  }
+
+  const secret = context.cloudflare.env.ADMIN_TOKEN as string | undefined;
+  const token = String(formData.get("token") ?? "");
+
+  if (!secret || secret.length < 32) {
+    return {
+      error: "Admin sign-in requires an ADMIN_TOKEN of at least 32 characters.",
+    } satisfies ActionData;
+  }
+
+  if (!(await verifyAdminToken(token, secret))) {
+    return { error: "Invalid admin token." } satisfies ActionData;
+  }
+
+  return data(
+    { success: true } satisfies ActionData,
+    {
+      headers: {
+        "Set-Cookie": await createAdminSessionCookie(secret, request.url),
+      },
+    },
+  );
+}
+
+export function headers() {
+  return { "Cache-Control": "no-store" };
+}
 
 type Post = {
   id: number;
@@ -20,20 +74,30 @@ type Post = {
 };
 
 export default function Admin() {
+  const actionData = useActionData<ActionData>();
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [needsLogin, setNeedsLogin] = useState(false);
 
   async function loadPosts() {
     try {
       setLoading(true);
 
-      const response = await fetch("/api/admin/posts");
+      const response = await fetch("/api/admin/posts", { cache: "no-store" });
+
+      if (response.status === 401) {
+        setNeedsLogin(true);
+        setPosts([]);
+        setError("");
+        return;
+      }
 
       if (!response.ok) {
         throw new Error("Failed to load posts.");
       }
 
+      setNeedsLogin(false);
       const data = await response.json();
 
       setPosts(data);
@@ -49,6 +113,12 @@ export default function Admin() {
   useEffect(() => {
     loadPosts();
   }, []);
+
+  useEffect(() => {
+    if (actionData?.success) {
+      loadPosts();
+    }
+  }, [actionData?.success]);
 
   // -----------------------------
   // PUBLISH
@@ -144,6 +214,42 @@ export default function Admin() {
     (post) => post.published === 1,
   );
 
+  if (!loading && needsLogin) {
+    return (
+      <>
+        <Header />
+        <main className="mx-auto max-w-xl px-6 py-12">
+          <h1 className="text-3xl font-black text-zinc-950">Admin sign-in</h1>
+          <p className="mt-3 text-zinc-600">Enter the configured admin token to continue.</p>
+          {actionData?.error && (
+            <p className="mt-5 rounded-md bg-red-50 p-4 text-red-800" role="alert">
+              {actionData.error}
+            </p>
+          )}
+          <Form method="post" className="mt-6 space-y-4">
+            <label className="block font-semibold text-zinc-900">
+              Admin token
+              <input
+                type="password"
+                name="token"
+                required
+                autoComplete="current-password"
+                className="mt-2 block w-full rounded-md border border-zinc-300 px-3 py-2"
+              />
+            </label>
+            <button
+              type="submit"
+              className="rounded-md bg-zinc-950 px-5 py-3 font-bold text-white hover:bg-red-700"
+            >
+              Sign in
+            </button>
+          </Form>
+        </main>
+        <Footer />
+      </>
+    );
+  }
+
   return (
     <>
       <Header />
@@ -166,12 +272,23 @@ export default function Admin() {
             </p>
           </div>
 
-          <a
-            href="/write"
-            className="inline-flex rounded-md bg-zinc-950 px-5 py-3 font-bold text-white hover:bg-red-700"
-          >
-            New Article
-          </a>
+          <div className="flex gap-3">
+            <Form method="post" reloadDocument>
+              <input type="hidden" name="intent" value="logout" />
+              <button
+                type="submit"
+                className="inline-flex rounded-md border border-zinc-300 px-4 py-3 font-bold text-zinc-700 hover:bg-zinc-50"
+              >
+                Sign out
+              </button>
+            </Form>
+            <a
+              href="/write"
+              className="inline-flex rounded-md bg-zinc-950 px-5 py-3 font-bold text-white hover:bg-red-700"
+            >
+              New Article
+            </a>
+          </div>
         </div>
 
         {/* ERROR */}

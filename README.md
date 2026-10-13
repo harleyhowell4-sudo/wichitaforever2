@@ -47,3 +47,13 @@ A perfect starting point for building interactive, styled, and edge-deployed SPA
 - 🎨 [shadcn/ui](https://ui.shadcn.com)
 - 💨 [Tailwind CSS Documentation](https://tailwindcss.com/)
 - 🔀 [React Router Docs](https://reactrouter.com/)
+
+## Admin Access
+
+Admin APIs and article editing require a high-entropy `ADMIN_TOKEN` Worker secret of at least 32 characters. Set it before deploying:
+
+```sh
+npx wrangler secret put ADMIN_TOKEN
+```
+
+For local development, put `ADMIN_TOKEN=<local-secret>` in `.dev.vars`. The admin page exchanges it for a signed, HTTP-only session cookie that expires after 12 hours. Public writer submissions remain drafts until an authenticated admin publishes them.

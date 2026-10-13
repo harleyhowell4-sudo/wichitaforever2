@@ -1,10 +1,119 @@
-import { Hono } from "hono";
+import { Hono, type Context, type MiddlewareHandler } from "hono";
+import { hasValidAdminSession } from "../auth";
 
 type Bindings = {
   DB: D1Database;
+  ADMIN_TOKEN?: string;
 };
 
 const posts = new Hono<{ Bindings: Bindings }>();
+const MAX_REQUEST_BODY_BYTES = 512 * 1024;
+
+class RequestBodyError extends Error {
+  constructor(
+    message: string,
+    readonly status: 400 | 413 | 415,
+  ) {
+    super(message);
+  }
+}
+
+const requireAdmin: MiddlewareHandler<{ Bindings: Bindings }> = async (c, next) => {
+  c.header("Cache-Control", "no-store");
+
+  if (!(await hasValidAdminSession(c.req.raw, c.env.ADMIN_TOKEN))) {
+    return c.json({ error: "Unauthorized" }, 401);
+  }
+
+  await next();
+};
+
+async function readJsonObject(request: Request): Promise<Record<string, unknown>> {
+  const contentType = request.headers
+    .get("content-type")
+    ?.split(";", 1)[0]
+    .trim()
+    .toLowerCase();
+
+  if (contentType !== "application/json") {
+    throw new RequestBodyError("Content-Type must be application/json", 415);
+  }
+
+  const contentLength = Number(request.headers.get("content-length"));
+
+  if (Number.isFinite(contentLength) && contentLength > MAX_REQUEST_BODY_BYTES) {
+    throw new RequestBodyError("Request body is too large", 413);
+  }
+
+  const reader = request.body?.getReader();
+
+  if (!reader) {
+    throw new RequestBodyError("A JSON request body is required", 400);
+  }
+
+  const chunks: Uint8Array[] = [];
+  let totalBytes = 0;
+
+  while (true) {
+    const { done, value } = await reader.read();
+
+    if (done) {
+      break;
+    }
+
+    totalBytes += value.byteLength;
+
+    if (totalBytes > MAX_REQUEST_BODY_BYTES) {
+      await reader.cancel();
+      throw new RequestBodyError("Request body is too large", 413);
+    }
+
+    chunks.push(value);
+  }
+
+  const bytes = new Uint8Array(totalBytes);
+  let offset = 0;
+
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+
+  let value: unknown;
+
+  try {
+    value = JSON.parse(new TextDecoder().decode(bytes));
+  } catch {
+    throw new RequestBodyError("Request body must contain valid JSON", 400);
+  }
+
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    throw new RequestBodyError("Request body must be a JSON object", 400);
+  }
+
+  return value as Record<string, unknown>;
+}
+
+function bodyErrorResponse(
+  c: Context<{ Bindings: Bindings }>,
+  error: unknown,
+) {
+  if (error instanceof RequestBodyError) {
+    return c.json({ error: error.message }, error.status);
+  }
+
+  return null;
+}
+
+posts.use("/api/admin/*", requireAdmin);
+posts.use("/api/posts/:id/*", requireAdmin);
+posts.use("/api/posts/:id", async (c, next) => {
+  if (c.req.method === "GET") {
+    return next();
+  }
+
+  return requireAdmin(c, next);
+});
 
 // GET all published posts
 posts.get("/api/posts", async (c) => {
@@ -14,7 +123,6 @@ posts.get("/api/posts", async (c) => {
       title,
       slug,
       description,
-      content,
       hero_image,
       tags,
       author,
@@ -25,10 +133,11 @@ posts.get("/api/posts", async (c) => {
       featured,
       views
     FROM posts
-    WHERE published = 1
+    WHERE published = 1 AND draft = 0
     ORDER BY created_at DESC
   `).all();
 
+  c.header("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
   return c.json(results);
 });
 
@@ -63,6 +172,8 @@ posts.get("/api/posts/id/:id", async (c) => {
     SELECT *
     FROM posts
     WHERE id = ?
+      AND published = 1
+      AND draft = 0
   `)
     .bind(id)
     .first();
@@ -71,6 +182,7 @@ posts.get("/api/posts/id/:id", async (c) => {
     return c.json({ error: "Post not found" }, 404);
   }
 
+  c.header("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
   return c.json(post);
 });
 // GET single post
@@ -81,6 +193,8 @@ posts.get("/api/posts/:slug", async (c) => {
     SELECT *
     FROM posts
     WHERE slug = ?
+      AND published = 1
+      AND draft = 0
   `)
     .bind(slug)
     .first();
@@ -89,28 +203,24 @@ posts.get("/api/posts/:slug", async (c) => {
     return c.json({ error: "Post not found" }, 404);
   }
 
+  c.header("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
   return c.json(post);
 });
 
 // CREATE post
 posts.post("/api/posts", async (c) => {
   try {
-    const body = await c.req.json();
+    const body = await readJsonObject(c.req.raw);
+    const { title, slug, content } = body;
 
-    const {
-      title,
-      slug,
-      description = "",
-      content,
-      hero_image = null,
-      tags = "",
-      author = "",
-      draft = 0,
-      published = 1,
-      featured = 0,
-    } = body;
-
-    if (!title || !slug || !content) {
+    if (
+      typeof title !== "string" ||
+      typeof slug !== "string" ||
+      typeof content !== "string" ||
+      !title.trim() ||
+      !slug.trim() ||
+      !content.trim()
+    ) {
       return c.json(
         {
           error: "title, slug, and content are required",
@@ -118,6 +228,18 @@ posts.post("/api/posts", async (c) => {
         400,
       );
     }
+
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || title.length > 240) {
+      return c.json({ error: "title or slug is invalid" }, 400);
+    }
+
+    const description = typeof body.description === "string" ? body.description : "";
+    const heroImage =
+      typeof body.hero_image === "string" || body.hero_image === null
+        ? body.hero_image
+        : null;
+    const tags = typeof body.tags === "string" ? body.tags : "";
+    const author = typeof body.author === "string" ? body.author : "";
 
     const existing = await c.env.DB.prepare(`
       SELECT id
@@ -144,7 +266,7 @@ posts.post("/api/posts", async (c) => {
         slug,
         description,
         content,
-        hero_image,
+        heroImage,
         tags,
         author,
         created_at,
@@ -166,9 +288,9 @@ posts.post("/api/posts", async (c) => {
         author,
         now,
         now,
-        draft ? 1 : 0,
-        published ? 1 : 0,
-        featured ? 1 : 0,
+        1,
+        0,
+        0,
       )
       .run();
 
@@ -181,6 +303,12 @@ posts.post("/api/posts", async (c) => {
       201,
     );
   } catch (error) {
+    const bodyError = bodyErrorResponse(c, error);
+
+    if (bodyError) {
+      return bodyError;
+    }
+
     console.error(error);
 
     return c.json(
@@ -295,7 +423,7 @@ posts.post("/api/posts/:id/publish", async (c) => {
 posts.put("/api/posts/:id", async (c) => {
   try {
     const id = c.req.param("id");
-    const body = await c.req.json();
+    const body = await readJsonObject(c.req.raw);
 
     const existing = await c.env.DB.prepare(`
       SELECT *
@@ -322,6 +450,18 @@ posts.put("/api/posts/:id", async (c) => {
     const tags = body.tags ?? existing.tags ?? "";
     const author = body.author ?? existing.author ?? "Wichita Forever";
 
+    if (
+      typeof title !== "string" ||
+      typeof slug !== "string" ||
+      typeof description !== "string" ||
+      typeof content !== "string" ||
+      (hero_image !== null && typeof hero_image !== "string") ||
+      typeof tags !== "string" ||
+      typeof author !== "string"
+    ) {
+      return c.json({ error: "Post fields must be strings" }, 400);
+    }
+
     const draft =
       body.draft === undefined
         ? existing.draft
@@ -329,12 +469,9 @@ posts.put("/api/posts/:id", async (c) => {
           ? 1
           : 0;
 
-    const published =
-      body.published === undefined
-        ? existing.published
-        : body.published
-          ? 1
-          : 0;
+    const requestedPublished =
+      body.published === undefined ? existing.published : body.published ? 1 : 0;
+    const published = draft === 1 ? 0 : requestedPublished;
 
     const featured =
       body.featured === undefined
@@ -343,13 +480,17 @@ posts.put("/api/posts/:id", async (c) => {
           ? 1
           : 0;
 
-    if (!title || !slug || !content) {
+    if (!title.trim() || !slug.trim() || !content.trim()) {
       return c.json(
         {
           error: "title, slug, and content are required",
         },
         400,
       );
+    }
+
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || title.length > 240) {
+      return c.json({ error: "title or slug is invalid" }, 400);
     }
 
     const duplicateSlug = await c.env.DB.prepare(`
@@ -409,6 +550,12 @@ posts.put("/api/posts/:id", async (c) => {
       message: "Post updated successfully",
     });
   } catch (error) {
+    const bodyError = bodyErrorResponse(c, error);
+
+    if (bodyError) {
+      return bodyError;
+    }
+
     console.error(error);
 
     return c.json(

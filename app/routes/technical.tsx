@@ -15,7 +15,7 @@ export async function loader({ context }: { context: any }) {
   const queryResult = await context.cloudflare.env.DB.prepare(
     `SELECT id, title, slug, description, hero_image, created_at
      FROM posts
-     WHERE published = 1 AND tags = 'technical'
+    WHERE published = 1 AND draft = 0 AND tags = 'technical'
      ORDER BY created_at DESC`,
   ).all();
 

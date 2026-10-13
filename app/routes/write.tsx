@@ -1,6 +1,7 @@
 import { Form, useActionData, useNavigation } from "react-router";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { readLimitedFormData } from "../../workers/request-body";
 
 type ActionData = {
   success?: true;
@@ -24,7 +25,7 @@ export async function action({
   request: Request;
   context: any;
 }) {
-  const formData = await request.formData();
+  const formData = await readLimitedFormData(request);
 
   const title = String(formData.get("title") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();

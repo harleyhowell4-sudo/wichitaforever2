@@ -29,13 +29,17 @@ export async function loader({ context }: HomeLoaderArgs) {
     .prepare(
       `SELECT id, title, slug, description, hero_image, created_at
        FROM posts
-       WHERE published = 1
+      WHERE published = 1 AND draft = 0
        ORDER BY created_at DESC
        LIMIT 3`,
     )
     .all();
 
   return { posts: queryResult.results as PostSummary[] };
+}
+
+export function headers() {
+  return { "Cache-Control": "public, max-age=60, stale-while-revalidate=300" };
 }
 
 export default function Home({ loaderData }: HomeComponentProps) {

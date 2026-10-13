@@ -1,4 +1,6 @@
 import { data, Link } from "react-router";
+import xss from "xss";
+import { hasValidAdminSession } from "../../workers/auth";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
@@ -13,13 +15,14 @@ type Post = {
   author: string | null;
   created_at: string;
   updated_at: string;
-  draft: number;
-  published: number;
   featured: number;
   views: number;
+  draft: number;
+  published: number;
 };
 
 type PostLoaderArgs = {
+  request: Request;
   params: { slug: string };
   context: any;
 };
@@ -30,19 +33,82 @@ type PostComponentProps = {
   };
 };
 
-export async function loader({ params, context }: PostLoaderArgs) {
+export async function loader({ request, params, context }: PostLoaderArgs) {
   const db = context.cloudflare.env.DB;
 
-  const post = (await db
-    .prepare(`SELECT * FROM posts WHERE slug = ?`)
+  let post = (await db
+    .prepare(`
+      SELECT
+        id, title, slug, description, content, hero_image, tags, author,
+        created_at, updated_at, featured, views, draft, published
+      FROM posts
+      WHERE slug = ? AND published = 1 AND draft = 0
+    `)
     .bind(params.slug)
     .first()) as Post | null;
+
+  let privatePreview = false;
+
+  if (
+    !post &&
+    (await hasValidAdminSession(request, context.cloudflare.env.ADMIN_TOKEN))
+  ) {
+    post = (await db
+      .prepare(`
+        SELECT
+          id, title, slug, description, content, hero_image, tags, author,
+          created_at, updated_at, featured, views, draft, published
+        FROM posts
+        WHERE slug = ?
+      `)
+      .bind(params.slug)
+      .first()) as Post | null;
+    privatePreview = post !== null;
+  }
     
   if (!post) {
     throw data("Post not found", { status: 404 });
   }
 
-  return { post };
+  return data(
+    {
+      post: {
+        ...post,
+        content: xss(post.content ?? "", {
+          whiteList: {
+            a: ["href", "title"],
+            blockquote: [],
+            br: [],
+            code: [],
+            em: [],
+            h1: [],
+            h2: [],
+            h3: [],
+            h4: [],
+            hr: [],
+            i: [],
+            img: ["src", "alt", "title", "width", "height"],
+            li: [],
+            ol: [],
+            p: [],
+            pre: [],
+            strong: [],
+            u: [],
+            ul: [],
+          },
+          stripIgnoreTag: true,
+          stripIgnoreTagBody: ["script", "style"],
+        }),
+      },
+    },
+    {
+      headers: {
+        "Cache-Control": privatePreview
+          ? "no-store"
+          : "public, max-age=60, stale-while-revalidate=300",
+      },
+    },
+  );
 }
 
 export function meta({ data }: { data: { post: Post } | undefined }) {
