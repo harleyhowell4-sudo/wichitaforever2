@@ -32,7 +32,8 @@ export default function Technical({ loaderData }: { loaderData: { posts: PostSum
             <div>
               <p className="eyebrow">Behind the headlines</p>
               <h1>Technical notes</h1>
-              <p>Technical writeups and implementation notes.</p>
+              <p>Hi! We're workin' real hard over here - be back soon!</p>
+              <img src="/public/butters.png" width="200" height="200"  />
             </div>
           </div>
           {loaderData.posts.length === 0 ? (
@@ -51,6 +52,7 @@ export default function Technical({ loaderData }: { loaderData: { posts: PostSum
                     year: "numeric",
                     month: "long",
                     day: "numeric",
+            
                   })}
                 />
               ))}
