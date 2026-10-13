@@ -185,6 +185,29 @@ a {
 	margin-bottom: 22px;
 }
 
+.page-heading {
+	padding-bottom: 22px;
+	border-bottom: 1px solid var(--line);
+}
+
+.page-heading .eyebrow {
+	margin: 0 0 7px;
+	color: var(--red);
+}
+
+.page-heading h1,
+.article-header h1,
+.article-error h1 {
+	margin: 0;
+	font: 600 48px/1.02 "Newsreader", Georgia, serif;
+	letter-spacing: 0;
+}
+
+.page-heading > div > p:not(.eyebrow) {
+	margin: 9px 0 0;
+	color: var(--muted);
+}
+
 .section-heading .eyebrow,
 .about-copy .eyebrow {
 	margin: 0 0 6px;
@@ -308,6 +331,112 @@ a {
 	line-height: 1.75;
 }
 
+.about-acronym {
+	margin: 12px 0 20px;
+	padding-left: 22px;
+}
+
+.article-shell {
+	padding-top: 44px;
+	padding-bottom: 80px;
+}
+
+.article-page {
+	max-width: 800px;
+	margin: 0 auto;
+}
+
+.article-back {
+	display: inline-block;
+	margin-bottom: 36px;
+	color: var(--green);
+	font-size: 12px;
+	font-weight: 700;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 4px;
+}
+
+.article-header {
+	margin-bottom: 26px;
+}
+
+.article-header .eyebrow,
+.article-error .eyebrow {
+	margin: 0 0 10px;
+	color: var(--red);
+}
+
+.article-header h1 {
+	font-size: 58px;
+}
+
+.article-meta {
+	margin-top: 16px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px 18px;
+	color: var(--muted);
+	font-size: 12px;
+}
+
+.article-image {
+	display: block;
+	width: 100%;
+	max-height: 560px;
+	margin: 0 0 34px;
+	object-fit: cover;
+}
+
+.article-content {
+	font-size: 17px;
+	line-height: 1.8;
+}
+
+.article-content > :first-child {
+	margin-top: 0;
+}
+
+.article-content h2,
+.article-content h3,
+.article-content h4 {
+	margin: 1.8em 0 0.55em;
+	font: 600 30px/1.1 "Newsreader", Georgia, serif;
+}
+
+.article-content p,
+.article-content ul,
+.article-content ol {
+	margin: 0 0 1.2em;
+}
+
+.article-content img {
+	max-width: 100%;
+	height: auto;
+}
+
+.article-content a {
+	color: var(--green);
+	text-decoration-thickness: 1px;
+	text-underline-offset: 3px;
+}
+
+.article-content blockquote {
+	margin: 1.6em 0;
+	padding: 4px 0 4px 20px;
+	border-left: 3px solid var(--red);
+	color: var(--muted);
+	font: 500 24px/1.35 "Newsreader", Georgia, serif;
+}
+
+.article-error {
+	max-width: 800px;
+	margin: 30px auto 0;
+}
+
+.article-error p:not(.eyebrow) {
+	color: var(--muted);
+}
+
 .site-footer {
 	padding: 28px 24px 32px;
 	border-top: 1px solid var(--line);
@@ -412,8 +541,32 @@ a {
 	}
 
 	.section-heading h2,
-	.about-copy h2 {
+	.about-copy h2,
+	.page-heading h1 {
 		font-size: 33px;
+	}
+
+	.article-shell {
+		padding-top: 30px;
+		padding-bottom: 58px;
+	}
+
+	.article-back {
+		margin-bottom: 28px;
+	}
+
+	.article-header h1 {
+		font-size: 40px;
+	}
+
+	.article-content {
+		font-size: 16px;
+	}
+
+	.article-content h2,
+	.article-content h3,
+	.article-content h4 {
+		font-size: 27px;
 	}
 }
 

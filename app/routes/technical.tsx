@@ -1,5 +1,4 @@
 import Header from "../components/Header";
-import Hero from "../components/Hero";
 import Footer from "../components/Footer";
 import PostCard from "app/components/PostCard";
 
@@ -28,34 +27,36 @@ export default function Technical({ loaderData }: { loaderData: { posts: PostSum
     <>
       <Header />
       <main className="page-shell">
-        <Hero />
-
         <section className="latest-section">
-          <div className="section-heading">
+          <div className="page-heading">
             <div>
               <p className="eyebrow">Behind the headlines</p>
-              <h2>Technical notes</h2>
+              <h1>Technical notes</h1>
               <p>Technical writeups and implementation notes.</p>
             </div>
-            <span className="section-rule" aria-hidden="true" />
           </div>
+          {loaderData.posts.length === 0 ? (
+            <p className="empty-state">No technical notes published yet.</p>
+          ) : (
+            <div className="story-grid">
+              {loaderData.posts.map((post, index) => (
+                <PostCard
+                  key={post.id}
+                  title={post.title}
+                  description={post.description ?? ""}
+                  slug={post.slug}
+                  heroImage={post.hero_image}
+                  featured={index === 0}
+                  date={new Date(post.created_at).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                />
+              ))}
+            </div>
+          )}
         </section>
-        {loaderData.posts.length === 0 && <p className="empty-state">No technical notes published yet.</p>}
-        <div className="story-grid">
-          {loaderData.posts.map((post, index) => (
-            <PostCard
-              key={post.id}
-              title={post.title}
-              description={post.description ?? ""}
-              slug={post.slug}
-              heroImage={post.hero_image}
-              featured={index === 0}
-              date={new Date(post.created_at).toLocaleDateString("en-US", {
-                year: "numeric", month: "long", day: "numeric",
-              })}
-            />
-          ))}
-        </div>
       </main>
       <Footer />
     </>

@@ -1,6 +1,5 @@
 import PostCard from "app/components/PostCard";
 import Header from "../components/Header";
-import Hero from "../components/Hero";
 import Footer from "../components/Footer";
 
 type PostSummary = {
@@ -46,15 +45,12 @@ export default function Blog({ loaderData }: BlogComponentProps) {
     <>
       <Header />
       <main className="page-shell">
-        <Hero />
-
         <section className="latest-section">
-          <div className="section-heading">
+          <div className="page-heading">
             <div>
               <p className="eyebrow">The newsroom</p>
-              <h2>Latest posts</h2>
+              <h1>Latest posts</h1>
             </div>
-            <span className="section-rule" aria-hidden="true" />
           </div>
 
           {posts.length === 0 && (

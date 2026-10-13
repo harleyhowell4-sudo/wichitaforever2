@@ -6,7 +6,7 @@ export default function Header() {
       <div className="masthead-inner">
         <Link to="/" className="brand-lockup" aria-label="Wichita Forever home">
           <span className="brand-name">Wichita Forever</span>
-          <span className="brand-note">Independent news. Unverified reality.</span>
+          <span className="brand-note">Satire · Wichita, Kansas</span>
         </Link>
 
         <nav className="site-nav" aria-label="Main navigation">

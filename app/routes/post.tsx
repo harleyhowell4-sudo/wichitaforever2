@@ -1,4 +1,4 @@
-import { data } from "react-router";
+import { data, Link } from "react-router";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
@@ -64,30 +64,28 @@ export default function Post({ loaderData }: PostComponentProps) {
   return (
     <>
       <Header />
-      <main
-        style={{
-          maxWidth: "900px",
-          margin: "0 auto",
-          padding: "2rem",
-        }}
-      >
-        <article>
-          <h1 style={{ marginBottom: "0.25rem" }}>{post.title}</h1>
-          <p style={{ color: "#777", marginTop: 0 }}>
-            {date}
-            {post.author ? ` · ${post.author}` : ""}
-          </p>
+      <main className="page-shell article-shell">
+        <article className="article-page">
+          <Link to="/blog" className="article-back">Back to news</Link>
+          <header className="article-header">
+            <p className="eyebrow">The Wichita Forever file</p>
+            <h1>{post.title}</h1>
+            <div className="article-meta">
+              <time dateTime={post.created_at}>{date}</time>
+              {post.author && <span>By {post.author}</span>}
+            </div>
+          </header>
 
           {post.hero_image && (
             <img
               src={post.hero_image}
               alt={post.title}
-              style={{ width: "100%", height: "auto", borderRadius: "8px", margin: "1.5rem 0" }}
+              className="article-image"
             />
           )}
 
           {post.content && (
-            <div dangerouslySetInnerHTML={{ __html: post.content }} />
+            <div className="article-content" dangerouslySetInnerHTML={{ __html: post.content }} />
           )}
         </article>
       </main>
@@ -100,9 +98,13 @@ export function ErrorBoundary() {
   return (
     <>
       <Header />
-      <main style={{ maxWidth: "900px", margin: "0 auto", padding: "2rem" }}>
-        <h1>Post not found</h1>
-        <p>That story doesn't exist (or got taken down).</p>
+      <main className="page-shell article-shell">
+        <section className="article-error">
+          <p className="eyebrow">404 · The missing edition</p>
+          <h1>Post not found</h1>
+          <p>That story doesn't exist (or got taken down).</p>
+          <Link to="/blog" className="article-back">Back to news</Link>
+        </section>
       </main>
       <Footer />
     </>

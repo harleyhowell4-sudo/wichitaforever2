@@ -12,7 +12,7 @@ export default function Hero() {
       <div className="hero-mark" aria-hidden="true">
         <span>WF</span>
         <i />
-      </div>
+c      </div>
     </section>
   );
 }
