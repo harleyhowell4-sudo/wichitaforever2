@@ -33,7 +33,7 @@ export default function Technical({ loaderData }: { loaderData: { posts: PostSum
               <p className="eyebrow">Behind the headlines</p>
               <h1>Technical notes</h1>
               <p>Hi! We're workin' real hard over here - be back soon!</p>
-              <img src="/public/butters.png" width="200" height="200"  />
+              <img src="/butters.png" alt="Butters" width="200" height="200" />
             </div>
           </div>
           {loaderData.posts.length === 0 ? (
@@ -64,4 +64,3 @@ export default function Technical({ loaderData }: { loaderData: { posts: PostSum
     </>
   );
 }
-

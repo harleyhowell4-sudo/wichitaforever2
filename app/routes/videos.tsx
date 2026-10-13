@@ -45,6 +45,7 @@ export default function Videos() {
               <p>
                 The complete video archive from Jackass the Band.
               </p>
+              <img src="/peter.jpg" alt="Peter" width="200" height="200" />
               <a
                 className="video-channel-link"
                 href="https://www.youtube.com/@jackass.theband"
