@@ -9,6 +9,19 @@ type ActionData = {
   title?: string;
 };
 
+function getApiError(data: unknown): string | undefined {
+  if (
+    data &&
+    typeof data === "object" &&
+    "error" in data &&
+    typeof data.error === "string"
+  ) {
+    return data.error;
+  }
+
+  return undefined;
+}
+
 function makeSlug(title: string) {
   return (
     title
@@ -59,11 +72,10 @@ export async function action({
       }),
     });
 
-    const data = await response.json();
-
     if (!response.ok) {
+      const data: unknown = await response.json();
       return {
-        error: data.error || "Failed to create post.",
+        error: getApiError(data) ?? "Failed to create post.",
       } satisfies ActionData;
     }
 

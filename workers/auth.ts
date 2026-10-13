@@ -17,10 +17,15 @@ export async function verifyAdminToken(
     crypto.subtle.digest("SHA-256", encoder.encode(expected)),
   ]);
 
-  return crypto.subtle.timingSafeEqual(
-    new Uint8Array(providedHash),
-    new Uint8Array(expectedHash),
-  );
+  const providedBytes = new Uint8Array(providedHash);
+  const expectedBytes = new Uint8Array(expectedHash);
+  let difference = 0;
+
+  for (let index = 0; index < expectedBytes.length; index += 1) {
+    difference |= providedBytes[index] ^ expectedBytes[index];
+  }
+
+  return difference === 0;
 }
 
 export async function createAdminSessionCookie(
@@ -118,10 +123,15 @@ function encodeBase64Url(bytes: Uint8Array): string {
   return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
 }
 
-function decodeBase64Url(value: string): Uint8Array {
+function decodeBase64Url(value: string): Uint8Array<ArrayBuffer> {
   const base64 = value.replace(/-/g, "+").replace(/_/g, "/");
   const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, "=");
   const binary = atob(padded);
+  const bytes = new Uint8Array(binary.length);
 
-  return Uint8Array.from(binary, (character) => character.charCodeAt(0));
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index);
+  }
+
+  return bytes;
 }

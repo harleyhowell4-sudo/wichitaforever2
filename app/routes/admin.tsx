@@ -73,6 +73,29 @@ type Post = {
   views: number;
 };
 
+function isPost(value: unknown): value is Post {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const post = value as Record<string, unknown>;
+  return (
+    typeof post.id === "number" &&
+    typeof post.title === "string" &&
+    typeof post.slug === "string" &&
+    (typeof post.description === "string" || post.description === null) &&
+    (typeof post.hero_image === "string" || post.hero_image === null) &&
+    (typeof post.tags === "string" || post.tags === null) &&
+    (typeof post.author === "string" || post.author === null) &&
+    (typeof post.created_at === "string" || post.created_at === null) &&
+    (typeof post.updated_at === "string" || post.updated_at === null) &&
+    typeof post.draft === "number" &&
+    typeof post.published === "number" &&
+    typeof post.featured === "number" &&
+    typeof post.views === "number"
+  );
+}
+
 export default function Admin() {
   const actionData = useActionData<ActionData>();
   const [posts, setPosts] = useState<Post[]>([]);
@@ -98,7 +121,11 @@ export default function Admin() {
       }
 
       setNeedsLogin(false);
-      const data = await response.json();
+      const data: unknown = await response.json();
+
+      if (!Array.isArray(data) || !data.every(isPost)) {
+        throw new Error("Invalid posts response.");
+      }
 
       setPosts(data);
       setError("");
