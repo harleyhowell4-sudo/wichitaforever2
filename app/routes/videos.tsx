@@ -10,7 +10,7 @@ export default function Videos() {
           <div className="page-heading">
             <div>
               <p className="eyebrow">The complete uploads playlist</p>
-              <h1>Jackass the Band videos</h1>
+              
               <p>
                 Watch the videos from the{" "}
                 <a
@@ -35,6 +35,7 @@ export default function Videos() {
             />
           </div>
         </section>
+        
       </main>
       <Footer />
     </>
