@@ -13,6 +13,7 @@ export default function Header() {
           <NavLink to="/" end>Home</NavLink>
           <NavLink to="/blog">News</NavLink>
           <NavLink to="/videos">Videos</NavLink>
+          <NavLink to="/games">Games</NavLink>
           <NavLink to="/technical">Technical</NavLink>
           <NavLink to="/write">Write</NavLink>
           <NavLink to="/about">About</NavLink>
